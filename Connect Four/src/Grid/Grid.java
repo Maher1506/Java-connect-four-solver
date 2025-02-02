@@ -55,4 +55,8 @@ public class Grid {
             }
         }
     }
+
+    public boolean isColumnFull(int column) {
+        return grid[0][column-1] != '.'; // the top cell in the column is marked
+    }
 }
