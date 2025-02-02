@@ -16,6 +16,10 @@ public abstract class Player {
 
     public abstract void handleTurn();
 
+    public void display() {
+        System.out.println("Name: " + name + "| Token: " + token);
+    }
+
     // setters 
     public void setName(String name) {
         this.name = name;
