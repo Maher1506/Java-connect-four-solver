@@ -5,5 +5,7 @@ public class Main {
         Grid grid = new Grid();
 
         grid.displayGrid();
+        grid.addToken(1, 'x');
+        grid.displayGrid();
     }
 }

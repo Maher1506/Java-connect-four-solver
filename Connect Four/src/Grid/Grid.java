@@ -16,8 +16,6 @@ public class Grid {
                 grid[i][j] = '.';
             }
         }
-        grid[3][2] = 'o';
-        grid[3][1] = 'x';
     }
 
     // method to display the grid
@@ -34,5 +32,27 @@ public class Grid {
             System.out.print(i + " ");
         }
         System.out.println();
+    }
+
+    // method to add a token in the grid
+    public void addToken(int column, char token) {
+        // loop through all the possible rows for that column starting at the top
+        for (int i = 0; i < ROW_SIZE; i++) {
+            // if reached a marked cell mark the cell above it (if not out of bounds)
+            if (grid[i][column-1] != '.') {
+                // check if above cell is in bounds
+                if (i-1 >= 0) {  
+                    // mark the cell above it
+                    grid[i-1][column-1] = token;
+                }
+                break;
+            }
+            // if reached the end of the grid mark that cell
+            if (i == ROW_SIZE-1) {
+                // mark the most bottom cell
+                grid[i][column-1] = token;
+                break;
+            }
+        }
     }
 }
