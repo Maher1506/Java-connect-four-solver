@@ -24,14 +24,15 @@ public class Grid {
     public void displayGrid() {
         // loop through the grid to display its contents
         for (int i = 0; i < ROW_SIZE; i++) {
+            System.out.print("| ");
             for (int j = 0; j < COLUMN_SIZE; j++) {
-                System.out.print(grid[i][j] + " ");
+                System.out.print(grid[i][j] + " | ");
             }
             System.out.println();
         }
         // display column numbers for easier gameplay
         for (int i = 1; i <= COLUMN_SIZE; i++) {
-            System.out.print(i + " ");
+            System.out.print("  " + i + " ");
         }
         System.out.println();
     }
@@ -50,13 +51,11 @@ public class Grid {
 
     // checks whether the board is full or not (Tie)
     private boolean isFull() {
-        // loop through all cells in grid
-        for (int i = 0; i < ROW_SIZE; i++) {
-            for (int j = 0; j < COLUMN_SIZE; j++) {
-                // if any empty cell is found
-                if (grid[i][j] == '.') {
-                    return false;
-                }
+        // loop through the top row only
+        for (int i = 0; i < COLUMN_SIZE; i++) {
+            // if any empty cell is found
+            if (grid[0][i] == '.') {
+                return false;
             }
         }
         return true; // no empty cells found
@@ -68,10 +67,10 @@ public class Grid {
         // find the top most token in the column of the last move
         for (int i = 0; i < ROW_SIZE; i++) {
             // found the last move
-            if (grid[i][lastMove-1] != '.') {
+            if (grid[i][lastMove] != '.') {
                 // check if the last move results in a winning condition
-                if (checkCellNeighbors(i, lastMove-1, grid[i][lastMove-1])) {
-                    winnerToken = grid[i][lastMove-1];
+                if (checkCellNeighbors(i, lastMove, grid[i][lastMove])) {
+                    winnerToken = grid[i][lastMove];
                     return true;
                 }
                 break;
@@ -231,6 +230,6 @@ public class Grid {
     
     // setters
     public void setLastMove(int lastMove) {
-        this.lastMove = lastMove;
+        this.lastMove = lastMove-1;
     }
 }
