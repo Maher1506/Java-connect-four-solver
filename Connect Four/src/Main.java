@@ -14,7 +14,7 @@ public class Main {
         grid.displayGrid();
 
         // alternate between player turns
-        while (!game.isGameEnded()) {
+        while (true) {
             p1.handleTurn();
             p2.handleTurn();
         }

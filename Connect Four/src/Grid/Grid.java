@@ -37,21 +37,11 @@ public class Grid {
 
     // method to add a token in the grid
     public void addToken(int column, char token) {
-        // loop through all the possible rows for that column starting at the top
-        for (int i = 0; i < ROW_SIZE; i++) {
-            // if reached a marked cell mark the cell above it (if not out of bounds)
-            if (grid[i][column-1] != '.') {
-                // check if above cell is in bounds
-                if (i-1 >= 0) {  
-                    // mark the cell above it
-                    grid[i-1][column-1] = token;
-                }
-                break;
-            }
-            // if reached the end of the grid mark that cell
-            if (i == ROW_SIZE-1) {
-                // mark the most bottom cell
-                grid[i][column-1] = token;
+        // loop through all the possible rows for that column starting at the bottom
+        for (int i = ROW_SIZE-1; i >= 0; i--) {
+            // if reached an empty cell mark the cell
+            if (grid[i][column-1] == '.') {
+                grid[i][column-1] = token; // mark the cell
                 break;
             }
         }
@@ -92,7 +82,7 @@ public class Grid {
     // check if the requested cell is part of any winning streak
     private boolean checkCellNeighbors(int row, int column, char token) {
         // row of the cell
-        if ()
+        return true;
     }
 
     // checks whether the game ended or not
