@@ -17,6 +17,8 @@ public class HumanPlayer extends Player {
     @Override
     // method to take input from player and take action in game
     public void handleTurn() {
+        System.out.println("Player " + getName() + "'s turn: (" + getToken() + ")");
+
         int column = getInput(); // handle input
         getGrid().addToken(column, getToken()); // mark cell
         getGrid().setLastMove(column); // set new last move = current move made

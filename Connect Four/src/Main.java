@@ -21,6 +21,7 @@ public class Main {
 
             p2.handleTurn();
         }
-        System.out.println("Game ended");
+        
+        game.displayEndStats();
     }
 }
