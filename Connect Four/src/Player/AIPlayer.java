@@ -1,5 +1,6 @@
 package Player;
 
+import GameLogic.Move;
 import Grid.Grid;
 
 public class AIPlayer extends Player{
@@ -16,6 +17,19 @@ public class AIPlayer extends Player{
         getGrid().displayGrid(); // display grid after action
 
         System.out.println("AI made its move!");
+    }
+
+    // method to choose the best move using minimax and alpha-beta prunning
+    private void chooseUnbeatableMove() {
+        Move bestMove = minimax(getGrid(), true);
+        getGrid().addToken(bestMove.getMove(), getToken()); // mark cell
+        getGrid().setLastMove(bestMove.getScore()); // set new last move = current move made
+    }
+    private Move minimax(Grid state, boolean isMaximizingPlayer) {
+        // reached terminal state
+        if (state.isTerminalState()) {
+            
+        }
     }
 
     // method to choose a random column (1-7) inclusive

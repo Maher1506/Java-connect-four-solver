@@ -10,12 +10,26 @@ public class Grid {
     private static final int ROW_SIZE = 6;
     private static final int COLUMN_SIZE = 7;
 
+    // default constructor
     public Grid() {
         grid = new char[ROW_SIZE][COLUMN_SIZE];
 
         for (int i = 0; i < ROW_SIZE; i++) {
             for (int j = 0; j < COLUMN_SIZE; j++) {
                 grid[i][j] = '.';
+            }
+        }
+    }
+
+    // copy constructor
+    public Grid(Grid state) {
+        lastMove = state.getLastMove();
+        winnerToken = state.getWinnerToken();
+        grid = new char[ROW_SIZE][COLUMN_SIZE];
+
+        for (int i = 0; i < ROW_SIZE; i++) {
+            for (int j = 0; j < COLUMN_SIZE; j++) {
+                grid[i][j] = state.getGrid()[i][j];
             }
         }
     }
@@ -226,6 +240,12 @@ public class Grid {
     // getters
     public char getWinnerToken() {
         return winnerToken;
+    }
+    public char[][] getGrid() {
+        return grid;
+    }
+    public int getLastMove() {
+        return lastMove;
     }
     
     // setters
