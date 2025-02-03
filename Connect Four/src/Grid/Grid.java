@@ -82,16 +82,17 @@ public class Grid {
 
     // check if the requested cell is part of any winning streak
     private boolean checkCellNeighbors(int row, int column, char token) {
-        // counts the number of consecutive same tokens found
-        int streakCounter = 1; // accounts for the token itself
-
-        return checkHorizontal(row, column, token, streakCounter) ||
-               checkVertical(row, column, token, streakCounter) ||
-               checkRightDiagonal(row, column, token, streakCounter);
+        // return true if the cell is part of ANY winning streak
+        return checkHorizontal(row, column, token) ||
+               checkVertical(row, column, token) ||
+               checkRightDiagonal(row, column, token) ||
+               checkLeftDiagonal(row, column, token);
     }
 
     // checks if the cell is part of a horizontal winning streak
-    private boolean checkHorizontal(int row, int column, char token, int streakCounter) {
+    private boolean checkHorizontal(int row, int column, char token) {
+        // counts the number of consecutive same tokens found
+        int streakCounter = 1; // accounts for the token itself
         int i; // index
 
         // move left until a different token is found or the reached the left end of the board
@@ -114,15 +115,13 @@ public class Grid {
         }
 
         // check if reached a winning streak
-        if (streakCounter >= 4) {
-            return true;
-        } else {
-            return false;
-        }
+        return streakCounter >= 4;
     }
 
     // checks if the cell is part of a vertical winning streak
-    private boolean checkVertical(int row, int column, char token, int streakCounter) {
+    private boolean checkVertical(int row, int column, char token) {
+        // counts the number of consecutive same tokens found
+        int streakCounter = 1; // accounts for the token itself
         int i; // index
 
         // noo need to check upwards since it's impossible to place a token and have
@@ -136,15 +135,13 @@ public class Grid {
         }
 
         // check if a winning streak is found
-        if (streakCounter >= 4) {
-            return true;
-        } else {
-            return false;
-        }
+        return streakCounter >= 4;
     }
 
-    // cehcks all the diagonals in this form '\'
-    private boolean checkRightDiagonal(int row, int column, char token, int streakCounter) {
+    // checks all the diagonals in this form '\'
+    private boolean checkRightDiagonal(int row, int column, char token) {
+        // counts the number of consecutive same tokens found
+        int streakCounter = 1; // accounts for the token itself
         int i; // row index
         int j; // column index
 
@@ -176,11 +173,45 @@ public class Grid {
         }
 
         // check if a streak is found
+        return streakCounter >= 4;
+    }
+
+    // checks all the diagonals in this form '/'
+    private boolean checkLeftDiagonal(int row, int column, char token) {
+        // counts the number of consecutive same tokens found
+        int streakCounter = 1; // accounts for the token itself
+        int i; // row index
+        int j; // column index
+
+        // check for the top right part until a different token or end of grid is reached
+        // start at the immediate top right cell
+        i = row - 1;
+        j = column + 1;
+        while ((i >= 0 && j < COLUMN_SIZE) && grid[i][j] == token) {
+            streakCounter++;
+            // move up right
+            i--;
+            j++;
+        }
+
+        // check if a streak is reached before checking the bottom left part
         if (streakCounter >= 4) {
             return true;
-        } else {
-            return false;
         }
+
+        // check for the bottom left part
+        // start at the immediate bottom left cell
+        i = row + 1;
+        j = column - 1;
+        while ((i < ROW_SIZE && j >= 0) && grid[i][j] == token) {
+            streakCounter++;
+            // move down left
+            i++;
+            j--;
+        }
+
+        // check if a streak is reached
+        return streakCounter >= 4;
     }
 
     // checks whether the game ended or not
