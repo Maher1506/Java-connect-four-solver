@@ -121,6 +121,32 @@ public class Grid {
     // checks if the cell is part of a vertical winning streak
     private boolean checkVertical(int row, int column, char token, int streakCounter) {
         int i; // index
+
+        // move upwards until a different token is found or the end of the board
+        i = row - 1; // start at the immediate upper cell
+        while (grid[i][column] == token && i >= 0) {
+            streakCounter++; 
+            i--; // move up
+        }
+
+        // check if a winning streak is found before checking downward
+        if (streakCounter >= 4) {
+            return true;
+        }
+
+        // check downwards
+        i = row + 1; // start at the immediate lower cell
+        while (grid[i][column] == token && i < ROW_SIZE) {
+            streakCounter++;
+            i++; // move down
+        }
+
+        // check if a winning streak is found
+        if (streakCounter >= 4) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     // checks whether the game ended or not
