@@ -4,6 +4,7 @@ public class Grid {
     
     private char[][] grid;
     private char winnerToken;
+    private int lastMove; // stores the column of the last move made on the grid
 
     // board dimensions
     private static final int ROW_SIZE = 6;
@@ -61,19 +62,19 @@ public class Grid {
         return true; // no empty cells found
     }
 
-    // checks whether a player won the game
+    // checks whether a player won the game by checking the neighbors
+    // of the last inserted token (the player can only win from their last move)
     private boolean isGameWon() {
-        // loop through all cells
+        // find the top most token in the column of the last move
         for (int i = 0; i < ROW_SIZE; i++) {
-            for (int j = 0; j < COLUMN_SIZE; j++) {
-                // if a marked cell is found
-                if (grid[i][j] != '.') {
-                    // check the neighbors of the cell
-                    if (checkCellNeighbors(i, j, grid[i][j])) {
-                        winnerToken = grid[i][j];
-                        return true;
-                    }
+            // found the last move
+            if (grid[i][lastMove-1] != '.') {
+                // check if the last move results in a winning condition
+                if (checkCellNeighbors(i, lastMove-1, grid[i][lastMove-1])) {
+                    winnerToken = grid[i][lastMove-1];
+                    return true;
                 }
+                break;
             }
         }
         return false;
@@ -81,8 +82,45 @@ public class Grid {
 
     // check if the requested cell is part of any winning streak
     private boolean checkCellNeighbors(int row, int column, char token) {
-        // row of the cell
-        return true;
+        // counts the number of consecutive same tokens found
+        int streakCounter = 1; // accounts for the token itself
+
+        return checkHorizontal(row, column, token, streakCounter) ||
+               checkVertical(row, column, token, streakCounter);
+    }
+    // checks if the cell is part of a horizontal winning streak
+    private boolean checkHorizontal(int row, int column, char token, int streakCounter) {
+        int i; // index
+
+        // move left until a different token is found or the reached the left end of the board
+        i = column-1; // start at the cell left to the current cell
+        while (grid[row][i] == token && i >= 0) {
+            streakCounter++; // same token found
+            i--; // move left
+        }
+
+        // check if reached a winning streak before checking the right side
+        if (streakCounter >= 4) {
+            return true;
+        }
+
+        // check for the right side of the cell
+        i = column+1; // start at the cell right to the current cell
+        while (grid[row][i] == token && i < COLUMN_SIZE) {
+            streakCounter++;
+            i++; // move right
+        }
+
+        // check if reached a winning streak
+        if (streakCounter >= 4) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    // checks if the cell is part of a vertical winning streak
+    private boolean checkVertical(int row, int column, char token, int streakCounter) {
+        int i; // index
     }
 
     // checks whether the game ended or not
@@ -98,5 +136,10 @@ public class Grid {
     // getters
     public char getWinnerToken() {
         return winnerToken;
+    }
+    
+    // setters
+    public void setLastMove(int lastMove) {
+        this.lastMove = lastMove;
     }
 }
