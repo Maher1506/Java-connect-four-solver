@@ -4,7 +4,7 @@ public class Grid {
     
     private char[][] grid;
     private char winnerToken;
-    private int lastMove; // stores the column of the last move made on the grid
+    private int lastMove = 1; // stores the column of the last move made on the grid
 
     // board dimensions
     private static final int ROW_SIZE = 6;
@@ -94,7 +94,7 @@ public class Grid {
 
         // move left until a different token is found or the reached the left end of the board
         i = column-1; // start at the cell left to the current cell
-        while (grid[row][i] == token && i >= 0) {
+        while (i >= 0 && grid[row][i] == token) {
             streakCounter++; // same token found
             i--; // move left
         }
@@ -106,7 +106,7 @@ public class Grid {
 
         // check for the right side of the cell
         i = column+1; // start at the cell right to the current cell
-        while (grid[row][i] == token && i < COLUMN_SIZE) {
+        while (i < COLUMN_SIZE && grid[row][i] == token) {
             streakCounter++;
             i++; // move right
         }
@@ -122,21 +122,12 @@ public class Grid {
     private boolean checkVertical(int row, int column, char token, int streakCounter) {
         int i; // index
 
-        // move upwards until a different token is found or the end of the board
-        i = row - 1; // start at the immediate upper cell
-        while (grid[i][column] == token && i >= 0) {
-            streakCounter++; 
-            i--; // move up
-        }
+        // noo need to check upwards since it's impossible to place a token and have
+        // other tokens above it
 
-        // check if a winning streak is found before checking downward
-        if (streakCounter >= 4) {
-            return true;
-        }
-
-        // check downwards
+        // check downwards until a different token is found or the end of the board
         i = row + 1; // start at the immediate lower cell
-        while (grid[i][column] == token && i < ROW_SIZE) {
+        while (i < ROW_SIZE && grid[i][column] == token) {
             streakCounter++;
             i++; // move down
         }

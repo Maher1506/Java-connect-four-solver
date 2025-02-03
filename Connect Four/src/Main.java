@@ -14,9 +14,13 @@ public class Main {
         grid.displayGrid();
 
         // alternate between player turns
-        while (true) {
+        while (!game.isGameEnded()) {
             p1.handleTurn();
+
+            if (game.isGameEnded()) { break; }
+
             p2.handleTurn();
         }
+        System.out.println("Game ended");
     }
 }
