@@ -61,6 +61,12 @@ public class Grid {
                 break;
             }
         }
+        setLastMove(column); // update last move
+    }
+
+    // updates the last move made
+    private void setLastMove(int lastMove) {
+        this.lastMove = lastMove-1;
     }
 
     // checks whether the board is full or not (Tie)
@@ -249,7 +255,5 @@ public class Grid {
     }
     
     // setters
-    public void setLastMove(int lastMove) {
-        this.lastMove = lastMove-1;
-    }
+    
 }

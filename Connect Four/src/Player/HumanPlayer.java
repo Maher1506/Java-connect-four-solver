@@ -21,7 +21,6 @@ public class HumanPlayer extends Player {
 
         int column = getInput(); // handle input
         getGrid().addToken(column, getToken()); // mark cell
-        getGrid().setLastMove(column); // set new last move = current move made
         getGrid().displayGrid(); // display grid after action
     }
 
