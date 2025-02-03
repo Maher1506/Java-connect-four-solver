@@ -18,6 +18,7 @@ public class AIPlayer extends Player{
         System.out.println("AI made its move!");
     }
 
+    // method to choose a random column (1-7) inclusive
     private void chooseRndMove() {
         int column = ((int) (Math.random() * 7)) + 1; // choose random column
         getGrid().addToken(column, getToken()); // mark cell
