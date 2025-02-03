@@ -86,8 +86,10 @@ public class Grid {
         int streakCounter = 1; // accounts for the token itself
 
         return checkHorizontal(row, column, token, streakCounter) ||
-               checkVertical(row, column, token, streakCounter);
+               checkVertical(row, column, token, streakCounter) ||
+               checkRightDiagonal(row, column, token, streakCounter);
     }
+
     // checks if the cell is part of a horizontal winning streak
     private boolean checkHorizontal(int row, int column, char token, int streakCounter) {
         int i; // index
@@ -118,6 +120,7 @@ public class Grid {
             return false;
         }
     }
+
     // checks if the cell is part of a vertical winning streak
     private boolean checkVertical(int row, int column, char token, int streakCounter) {
         int i; // index
@@ -133,6 +136,46 @@ public class Grid {
         }
 
         // check if a winning streak is found
+        if (streakCounter >= 4) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    // cehcks all the diagonals in this form '\'
+    private boolean checkRightDiagonal(int row, int column, char token, int streakCounter) {
+        int i; // row index
+        int j; // column index
+
+        // check the top left part until a different token or end of board reached
+        // start at the immediate top left cell
+        i = row - 1;
+        j = column - 1;
+        while ((i >= 0 && j >= 0) && grid[i][j] == token) {
+            streakCounter++;
+            // move up left
+            i--;
+            j--;
+        }
+
+        // check if streak found before checking the bottom right part
+        if (streakCounter >= 4) {
+            return true;
+        }
+
+        // check the bottom right part
+        // start at the immediate bottom right cell
+        i = row + 1;
+        j = column + 1;
+        while ((i < ROW_SIZE && j < COLUMN_SIZE) && grid[i][j] == token) {
+            streakCounter++;
+            // move down right
+            i++;
+            j++;
+        }
+
+        // check if a streak is found
         if (streakCounter >= 4) {
             return true;
         } else {
