@@ -32,6 +32,7 @@ public class AIPlayer extends Player{
         long endTime = System.currentTimeMillis(); // timer
         System.out.println("Duration: " + (endTime - startTime)); 
     }
+    // depth: 13 | best time: >= 1060 ms
     private Move minimax(Grid state, int depth, int alpha, int beta, boolean isMaximizingPlayer, int currentDepth) {
         // reached terminal state or intended depth
         if (state.isTerminalState() || depth == 0) {

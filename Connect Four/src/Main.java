@@ -4,6 +4,7 @@ import Player.AIPlayer;
 import Player.HumanPlayer;
 
 public class Main {
+    
     public static void main(String[] args) {
         Grid grid = new Grid();
         HumanPlayer p1 = new HumanPlayer("p1", 'x', grid);

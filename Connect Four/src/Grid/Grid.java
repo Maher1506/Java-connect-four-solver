@@ -13,6 +13,11 @@ public class Grid {
     private static final int ROW_SIZE = 6;
     private static final int COLUMN_SIZE = 7;
 
+     // ANSI color codes
+     public static final String RESET = "\u001B[0m"; 
+     public static final String RED = "\u001B[31m";  
+     public static final String YELLOW = "\u001B[33m";   
+
     // default constructor
     public Grid() {
         grid = new char[ROW_SIZE][COLUMN_SIZE];
@@ -30,7 +35,15 @@ public class Grid {
         for (int i = 0; i < ROW_SIZE; i++) {
             System.out.print("| ");
             for (int j = 0; j < COLUMN_SIZE; j++) {
-                System.out.print(grid[i][j] + " | ");
+                // colored output
+                char cell = grid[i][j];
+                if (cell == 'x') {
+                    System.out.print(RED + cell + RESET + " | ");
+                } else if (cell == 'o') {
+                    System.out.print(YELLOW + cell + RESET + " | ");
+                } else {
+                    System.out.print(cell + " | ");
+                }
             }
             System.out.println();
         }
