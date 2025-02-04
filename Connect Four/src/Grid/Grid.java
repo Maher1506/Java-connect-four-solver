@@ -6,7 +6,8 @@ public class Grid {
     
     private char[][] grid;
     private char winnerToken;
-    private int lastMove = 1; // stores the column of the last move made on the grid
+    private int lastMoveColumn = -1; // stores the column of the last move made on the grid
+    private int lastMoveRow = -1; // stores the row of the last move made on the grid
 
     // board dimensions
     private static final int ROW_SIZE = 6;
@@ -19,19 +20,6 @@ public class Grid {
         for (int i = 0; i < ROW_SIZE; i++) {
             for (int j = 0; j < COLUMN_SIZE; j++) {
                 grid[i][j] = '.';
-            }
-        }
-    }
-
-    // copy constructor
-    public Grid(Grid state) {
-        lastMove = state.getLastMove();
-        winnerToken = state.getWinnerToken();
-        grid = new char[ROW_SIZE][COLUMN_SIZE];
-
-        for (int i = 0; i < ROW_SIZE; i++) {
-            for (int j = 0; j < COLUMN_SIZE; j++) {
-                grid[i][j] = state.getGrid()[i][j];
             }
         }
     }
@@ -56,19 +44,31 @@ public class Grid {
     // method to add a token in the grid
     public void addToken(int column, char token) {
         // loop through all the possible rows for that column starting at the bottom
-        for (int i = ROW_SIZE-1; i >= 0; i--) {
+        int i;
+        for (i = ROW_SIZE-1; i >= 0; i--) {
             // if reached an empty cell mark the cell
             if (grid[i][column-1] == '.') {
                 grid[i][column-1] = token; // mark the cell
                 break;
             }
         }
-        setLastMove(column); // update last move
+        setLastMove(column, i); // update last move
     }
 
     // updates the last move made
-    private void setLastMove(int lastMove) {
-        this.lastMove = lastMove-1;
+    private void setLastMove(int column, int row) {
+        this.lastMoveColumn = column-1;
+        this.lastMoveRow = row;
+    }
+
+    // undos a move
+    public void undoMove(int column, int prevLastRow, int prevLastCol, char prevWinner) {
+        grid[lastMoveRow][lastMoveColumn] = '.'; // undo cell token
+        
+        // undo grid values
+        lastMoveRow = prevLastRow;
+        lastMoveColumn = prevLastCol;
+        winnerToken = prevWinner;
     }
 
     // checks whether the board is full or not (Tie)
@@ -86,17 +86,12 @@ public class Grid {
     // checks whether a player won the game by checking the neighbors
     // of the last inserted token (the player can only win from their last move)
     private boolean isGameWon() {
-        // find the top most token in the column of the last move
-        for (int i = 0; i < ROW_SIZE; i++) {
-            // found the last move
-            if (grid[i][lastMove] != '.') {
-                // check if the last move results in a winning condition
-                if (checkCellNeighbors(i, lastMove, grid[i][lastMove])) {
-                    winnerToken = grid[i][lastMove];
-                    return true;
-                }
-                break;
-            }
+        // if a move is made (not start of game) AND the last move results in a winning condition
+        if ((lastMoveColumn != -1 && lastMoveRow != -1) &&
+            (checkCellNeighbors(lastMoveRow, lastMoveColumn, grid[lastMoveRow][lastMoveColumn]))) { 
+
+            winnerToken = grid[lastMoveRow][lastMoveColumn]; // update winner
+            return true;
         }
         return false;
     }
@@ -263,13 +258,13 @@ public class Grid {
     public char getWinnerToken() {
         return winnerToken;
     }
+    public int getLastMoveRow() {
+        return lastMoveRow;
+    }
+    public int getLastMoveColumn() {
+        return lastMoveColumn;
+    }
     public char[][] getGrid() {
         return grid;
     }
-    public int getLastMove() {
-        return lastMove;
-    }
-    
-    // setters
-    
 }

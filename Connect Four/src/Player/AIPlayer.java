@@ -46,16 +46,21 @@ public class AIPlayer extends Player{
             opponentToken = 'x';
         }
 
+        // store prevous state data
+        int lastMoveRow = state.getLastMoveRow();
+        int lastMoveColumn = state.getLastMoveColumn();
+        char lastWinnerToken = state.getWinnerToken();
+
         // max player turn (us)
         if (isMaximizingPlayer) {
             Move bestMove = new Move(-1, Integer.MIN_VALUE, currentDepth);
 
             // loop through all possible avaialbe columns
             for (int i : state.getAvailableColumns()) {
-                Grid newState = new Grid(state);  // deep copy the grid
-                newState.addToken(i, getToken());  // mark new grid
+                state.addToken(i, getToken());  // AI move
                 // recursively find possible moves
-                Move move = minimax(newState, depth-1, alpha, beta, false, currentDepth+1);
+                Move move = minimax(state, depth-1, alpha, beta, false, currentDepth+1);
+                state.undoMove(i, lastMoveRow, lastMoveColumn, lastWinnerToken); // undo AI move
 
                 // if new move has higher score OR same score but lower depth
                 if ((move.getScore() > bestMove.getScore()) ||
@@ -78,10 +83,10 @@ public class AIPlayer extends Player{
 
             // loop through all possible avaialbe columns
             for (int i : state.getAvailableColumns()) {
-                Grid newState = new Grid(state); // deep copy the grid
-                newState.addToken(i, opponentToken); // mark new grid
+                state.addToken(i, opponentToken); // opponent move
                 // recursively find possible moves
-                Move move = minimax(newState, depth-1, alpha, beta, true, currentDepth+1);
+                Move move = minimax(state, depth-1, alpha, beta, true, currentDepth+1);
+                state.undoMove(i, lastMoveRow, lastMoveColumn, lastWinnerToken); // undo opponent move
 
                 // if new move has higher score OR same score but lower depth
                 if ((move.getScore() < bestMove.getScore()) ||
