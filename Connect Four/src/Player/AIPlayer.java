@@ -22,24 +22,25 @@ public class AIPlayer extends Player{
 
     // method to choose the best move using minimax and alpha-beta prunning
     private void chooseUnbeatableMove() {
-        Move bestMove = minimax(getGrid(), true, 0);
+        Move bestMove = minimax(getGrid(), 9, true, 0);
         getGrid().addToken(bestMove.getMove(), getToken()); // mark cell
+
         System.out.println("AI move: " + bestMove.getMove());
     }
-    private Move minimax(Grid state, boolean isMaximizingPlayer, int depth) {
-        // reached terminal state
-        if (state.isTerminalState()) {
+    private Move minimax(Grid state, int depth, boolean isMaximizingPlayer, int currentDepth) {
+        // reached terminal state or intended depth
+        if (state.isTerminalState() || depth == 0) {
             // game is a tie
             if (state.getWinnerToken() == '\0') {
-                return new Move(-1, 0, depth);
+                return new Move(-1, 0, currentDepth);
             }
             // max player (us) won
             else if (state.getWinnerToken() == getToken()) {
-                return new Move(-1, 1, depth);
+                return new Move(-1, 1, currentDepth);
             }
             // min player won (opponent)
             else {
-                return new Move(-1, -1, depth);
+                return new Move(-1, -1, currentDepth);
             }
         }
 
@@ -53,19 +54,19 @@ public class AIPlayer extends Player{
 
         // max player turn (us)
         if (isMaximizingPlayer) {
-            Move bestMove = new Move(-1, Integer.MIN_VALUE, depth);
+            Move bestMove = new Move(-1, Integer.MIN_VALUE, currentDepth);
 
             // loop through all possible avaialbe columns
             for (int i : state.getAvailableColumns()) {
                 Grid newState = new Grid(state);  // deep copy the grid
                 newState.addToken(i, getToken());  // mark new grid
                 // recursively find possible moves
-                Move move = minimax(newState, false, depth+1);
+                Move move = minimax(newState, depth-1, false, currentDepth+1);
 
                 // if new move has higher score OR same score but lower depth
                 if ((move.getScore() > bestMove.getScore()) ||
                     (move.getScore() == bestMove.getScore() && move.getDepth() < bestMove.getDepth())) {
-                    bestMove = new Move(i, move.getScore(), depth);
+                    bestMove = new Move(i, move.getScore(), currentDepth);
                 }
             }
             return bestMove;
@@ -73,19 +74,19 @@ public class AIPlayer extends Player{
 
         // min player turn (opponent)
         else {
-            Move bestMove = new Move(-1, Integer.MAX_VALUE, depth);
+            Move bestMove = new Move(-1, Integer.MAX_VALUE, currentDepth);
 
             // loop through all possible avaialbe columns
             for (int i : state.getAvailableColumns()) {
                 Grid newState = new Grid(state); // deep copy the grid
                 newState.addToken(i, opponentToken); // mark new grid
                 // recursively find possible moves
-                Move move = minimax(newState, true, depth+1);
+                Move move = minimax(newState, depth-1, true, currentDepth+1);
 
                 // if new move has higher score OR same score but lower depth
                 if ((move.getScore() < bestMove.getScore()) ||
                     (move.getScore() == bestMove.getScore() && move.getDepth() < bestMove.getDepth())) {
-                    bestMove = new Move(i, move.getScore(), depth);
+                    bestMove = new Move(i, move.getScore(), currentDepth);
                 }
             }
             return bestMove;
