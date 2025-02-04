@@ -22,7 +22,7 @@ public class AIPlayer extends Player{
 
     // method to choose the best move using minimax and alpha-beta prunning
     private void chooseUnbeatableMove() {
-        Move bestMove = minimax(getGrid(), 9, Integer.MIN_VALUE, Integer.MAX_VALUE, true, 0);
+        Move bestMove = minimax(getGrid(), 13, Integer.MIN_VALUE, Integer.MAX_VALUE, true, 0);
         getGrid().addToken(bestMove.getMove(), getToken()); // mark cell
 
         System.out.println("AI move: " + bestMove.getMove());
@@ -84,7 +84,7 @@ public class AIPlayer extends Player{
                     bestMove = new Move(i, move.getScore(), currentDepth);
                 }
 
-                beta = Math.min(alpha, move.getScore()); // update beta value
+                beta = Math.min(beta, move.getScore()); // update beta value
                 // pruning condition
                 if (beta <= alpha) {
                     break; // skip branch
