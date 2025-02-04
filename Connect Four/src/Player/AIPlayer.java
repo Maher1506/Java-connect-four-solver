@@ -39,14 +39,6 @@ public class AIPlayer extends Player{
             return evaluationFunction(state, currentDepth); // return heuristic value
         }
 
-        // get the opponnent's token
-        char opponentToken;
-        if (getToken() == 'x') {
-            opponentToken = 'o';
-        } else {
-            opponentToken = 'x';
-        }
-
         // store prevous state data
         int lastMoveRow = state.getLastMoveRow();
         int lastMoveColumn = state.getLastMoveColumn();
@@ -84,7 +76,7 @@ public class AIPlayer extends Player{
 
             // loop through all possible avaialbe columns
             for (int i : state.getAvailableColumns()) {
-                state.addToken(i, opponentToken); // opponent move
+                state.addToken(i, getOpponentToken()); // opponent move
                 // recursively find possible moves
                 Move move = minimax(state, depth-1, alpha, beta, true, currentDepth+1);
                 state.undoMove(i, lastMoveRow, lastMoveColumn, lastWinnerToken); // undo opponent move
