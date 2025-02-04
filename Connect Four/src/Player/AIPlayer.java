@@ -22,10 +22,15 @@ public class AIPlayer extends Player{
 
     // method to choose the best move using minimax and alpha-beta prunning
     private void chooseUnbeatableMove() {
+        long startTime = System.currentTimeMillis(); // timer
+
         Move bestMove = minimax(getGrid(), 13, Integer.MIN_VALUE, Integer.MAX_VALUE, true, 0);
         getGrid().addToken(bestMove.getMove(), getToken()); // mark cell
 
         System.out.println("AI move: " + bestMove.getMove());
+
+        long endTime = System.currentTimeMillis(); // timer
+        System.out.println("Duration: " + (endTime - startTime)); 
     }
     private Move minimax(Grid state, int depth, int alpha, int beta, boolean isMaximizingPlayer, int currentDepth) {
         // reached terminal state or intended depth
