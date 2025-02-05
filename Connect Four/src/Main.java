@@ -45,7 +45,7 @@ public class Main {
             ai1.chooseOptimalMove();
 
             if (i >= warmups) {
-                totalTime += ai1.time;
+                totalTime += ai1.getRunDuration();
             }
         }
         System.out.println("AVG: " + totalTime/iterations);

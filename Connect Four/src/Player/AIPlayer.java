@@ -5,7 +5,7 @@ import Grid.Grid;
 
 public class AIPlayer extends Player{
 
-    public long time;
+    private long runDuration;
     
     public AIPlayer(String name, char token, Grid grid) {
         super(name, token, grid);
@@ -33,7 +33,7 @@ public class AIPlayer extends Player{
 
         // System.out.println("AI move: " + bestMove.getMove());
         // System.out.println("Duration: " + (endTime - startTime));
-        time = endTime-startTime; 
+        runDuration = endTime-startTime; 
     }
     private Move negamax(Grid state, int depth, int alpha, int beta, int color, int currentDepth) {
         // reached terminal state or intended depth
@@ -94,5 +94,10 @@ public class AIPlayer extends Player{
     private void chooseRndMove() {
         int column = ((int) (Math.random() * 7)) + 1; // choose random column
         getGrid().addToken(column, getToken()); // mark cell
+    }
+
+    // getters
+    public long getRunDuration() {
+        return runDuration;
     }
 }
