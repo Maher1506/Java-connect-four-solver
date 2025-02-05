@@ -10,7 +10,7 @@ public class Move {
         this.score = score;
         this.depth = depth;
     }
-
+    
     // getters
     public int getMove() {
         return move;
