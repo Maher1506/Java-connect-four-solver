@@ -248,20 +248,6 @@ public class Grid {
         return isGameWon() || isFull();
     }
 
-    // returns an arraylist of all the available columns
-    public ArrayList<Integer> getAvailableColumns() {
-        ArrayList<Integer> res = new ArrayList<>();
-
-        // loop through all possible columns
-        for (int i = 1; i <= 7; i++) {
-            // if column is avaialble
-            if (!isColumnFull(i)) {
-                res.add(i); // add it to arraylist
-            }
-        }
-        return res;
-    }
-
     // check if the requested column contains an empty cell or not
     public boolean isColumnFull(int column) {
         return grid[0][column-1] != '.'; // the top cell in the column is marked
