@@ -7,10 +7,10 @@ public class Main {
     
     public static void main(String[] args) {
         
-        // depth: 15 | iterations: 70 | avg time: 1057538270 nano(s) = 1.057538270 (s)
+        // depth: 17 | iterations: 70 | avg time: 2189663655 nano(s) = 2.189663655 (s)
         benchMarkAI(70);
 
-        gameLoop();        
+        //gameLoop();        
     }
 
     private static void gameLoop() {

@@ -5,7 +5,7 @@ import Grid.Grid;
 
 public class AIPlayer extends Player{
 
-    private int[] columnOrder = {3, 2, 4, 1, 5, 0, 6};
+    private int[] columnOrder = {4, 3, 5, 2, 6, 1, 7};
 
     private long runDuration;
     
@@ -28,7 +28,7 @@ public class AIPlayer extends Player{
     public void chooseOptimalMove() {
         long startTime = System.nanoTime(); // timer
 
-        Move bestMove = negamax(getGrid(), 15, Integer.MIN_VALUE, Integer.MAX_VALUE, 1, 0);
+        Move bestMove = negamax(getGrid(), 17, Integer.MIN_VALUE, Integer.MAX_VALUE, 1, 0);
         getGrid().addToken(bestMove.getMove(), getToken()); // mark cell
 
         long endTime = System.nanoTime(); // timer
@@ -50,28 +50,31 @@ public class AIPlayer extends Player{
 
         Move bestMove = new Move(-1, Integer.MIN_VALUE, currentDepth);
 
-        // loop through all possible avaialbe columns
-        for (int i : state.getAvailableColumns()) {
-            char currentPlayerToken = (color == 1 ? getToken() : getOpponentToken());
-            state.addToken(i, currentPlayerToken);  // move
+        // loop through all possible available moves (exploring the center columns first)
+        for (int i : columnOrder) {
+            // explore if column is not empty
+            if (!getGrid().isColumnFull(i)) {
+                char currentPlayerToken = (color == 1 ? getToken() : getOpponentToken());
+                state.addToken(i, currentPlayerToken);  // move
 
-            // recursively find possible moves
-            Move move = negamax(state, depth-1, -beta, -alpha, -color, currentDepth+1);
+                // recursively find possible moves
+                Move move = negamax(state, depth-1, -beta, -alpha, -color, currentDepth+1);
 
-            state.undoMove(i, lastMoveRow, lastMoveColumn, lastWinnerToken); // undo move
+                state.undoMove(i, lastMoveRow, lastMoveColumn, lastWinnerToken); // undo move
 
-            int negatedScore = -move.getScore(); // negate score (instead of -negamax())
+                int negatedScore = -move.getScore(); // negate score (instead of -negamax())
 
-            // if new move has higher score OR same score but lower depth
-            if ((negatedScore > bestMove.getScore()) ||
-                (negatedScore == bestMove.getScore() && move.getDepth() < bestMove.getDepth())) {
-                bestMove = new Move(i, negatedScore, currentDepth);
-            }
-            
-            alpha = Math.max(alpha, negatedScore); // update alpha value
-            // pruning condition
-            if (beta <= alpha) {
-                break; // skip branch
+                // if new move has higher score OR same score but lower depth
+                if ((negatedScore > bestMove.getScore()) ||
+                    (negatedScore == bestMove.getScore() && move.getDepth() < bestMove.getDepth())) {
+                    bestMove = new Move(i, negatedScore, currentDepth);
+                }
+                
+                alpha = Math.max(alpha, negatedScore); // update alpha value
+                // pruning condition
+                if (beta <= alpha) {
+                    break; // skip branch
+                }
             }
         }
         return bestMove; 
