@@ -4,6 +4,8 @@ import GameLogic.Move;
 import Grid.Grid;
 
 public class AIPlayer extends Player{
+
+    public long time;
     
     public AIPlayer(String name, char token, Grid grid) {
         super(name, token, grid);
@@ -21,18 +23,18 @@ public class AIPlayer extends Player{
     }
 
     // method to choose the best move using minimax and alpha-beta prunning
-    private void chooseOptimalMove() {
-        long startTime = System.currentTimeMillis(); // timer
+    public void chooseOptimalMove() {
+        long startTime = System.nanoTime(); // timer
 
         Move bestMove = negamax(getGrid(), 15, Integer.MIN_VALUE, Integer.MAX_VALUE, 1, 0);
         getGrid().addToken(bestMove.getMove(), getToken()); // mark cell
 
-        System.out.println("AI move: " + bestMove.getMove());
+        long endTime = System.nanoTime(); // timer
 
-        long endTime = System.currentTimeMillis(); // timer
-        System.out.println("Duration: " + (endTime - startTime)); 
+        // System.out.println("AI move: " + bestMove.getMove());
+        // System.out.println("Duration: " + (endTime - startTime));
+        time = endTime-startTime; 
     }
-    // depth: 15 | best time: >= 1100 ms
     private Move negamax(Grid state, int depth, int alpha, int beta, int color, int currentDepth) {
         // reached terminal state or intended depth
         if (state.isTerminalState() || depth == 0) {
