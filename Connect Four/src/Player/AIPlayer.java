@@ -5,6 +5,8 @@ import Grid.Grid;
 
 public class AIPlayer extends Player{
 
+    private int[] columnOrder = {3, 2, 4, 1, 5, 0, 6};
+
     private long runDuration;
     
     public AIPlayer(String name, char token, Grid grid) {

@@ -10,27 +10,31 @@ public class Main {
         // depth: 15 | iterations: 70 | avg time: 1057538270 nano(s) = 1.057538270 (s)
         benchMarkAI(70);
 
-        // Grid grid = new Grid();
-        // HumanPlayer p1 = new HumanPlayer("p1", 'x', grid);
-        // HumanPlayer p2 = new HumanPlayer("p2", 'o', grid);
-        // AIPlayer ai1 = new AIPlayer("AI", 'o', grid);
+        gameLoop();        
+    }
 
-        // Game game = new Game(p1, ai1, grid);
+    private static void gameLoop() {
+        Grid grid = new Grid();
+        HumanPlayer p1 = new HumanPlayer("p1", 'x', grid);
+        HumanPlayer p2 = new HumanPlayer("p2", 'o', grid);
+        AIPlayer ai1 = new AIPlayer("AI", 'o', grid);
 
-        // // display starting info
-        // game.displayStats();
-        // grid.displayGrid();
+        Game game = new Game(p1, ai1, grid);
 
-        // // alternate between player turns
-        // while (!game.isGameEnded()) {
-        //     game.getPlayer1().handleTurn();
+        // display starting info
+        game.displayStats();
+        grid.displayGrid();
 
-        //     if (game.isGameEnded()) { break; }
+        // alternate between player turns
+        while (!game.isGameEnded()) {
+            game.getPlayer1().handleTurn();
 
-        //     game.getPlayer2().handleTurn();
-        // }
+            if (game.isGameEnded()) { break; }
+
+            game.getPlayer2().handleTurn();
+        }
         
-        // game.displayEndStats();
+        game.displayEndStats();
     }
 
     private static void benchMarkAI(int iterations) {
