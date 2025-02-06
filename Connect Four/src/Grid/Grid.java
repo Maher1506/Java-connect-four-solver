@@ -115,14 +115,10 @@ public class Grid {
 
     // checks whether the board is full or not (Tie)
     private boolean isFull() {
-        // loop through the top row only
-        for (int i = 0; i < COLUMN_SIZE; i++) {
-            // if any empty cell is found
-            if (grid[0][i] == '.') {
-                return false;
-            }
-        }
-        return true; // no empty cells found
+        long fullMask = (1L << 5) | (1L << 12) | (1L << 19) | 
+                        (1L << 26) | (1L << 33) | (1L << 40) | (1L << 47);
+            
+        return ((bitboards[0] | bitboards[1]) & fullMask) == fullMask;
     }
 
     // checks whether a player won the game by checking the neighbors

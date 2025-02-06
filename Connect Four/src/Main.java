@@ -37,7 +37,6 @@ public class Main {
             if (game.isGameEnded()) { break; }
 
             game.getPlayer2().handleTurn();
-            grid.undoMove();
         }
         
         game.displayEndStats();
