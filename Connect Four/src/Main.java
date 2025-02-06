@@ -13,9 +13,9 @@ public class Main {
          * avg time: 2189663655 nano(s) = 2.189663655 (s) 
          * nodes visited: 80,290,871
         */
-        benchMarkAI(70);
+        //benchMarkAI(70);
 
-        //gameLoop();        
+        gameLoop();        
     }
 
     private static void gameLoop() {
@@ -50,7 +50,7 @@ public class Main {
             Grid grid = new Grid();
             AIPlayer ai1 = new AIPlayer("AI", 'o', grid);
 
-            grid.addToken(4, 'x');
+            grid.makeMove(4, 'x');
             ai1.chooseOptimalMove();
 
             if (i >= warmups) {

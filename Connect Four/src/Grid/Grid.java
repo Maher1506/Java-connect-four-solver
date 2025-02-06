@@ -3,6 +3,8 @@ package Grid;
 public class Grid {
     
     private char[][] grid;
+    private long[] bitboards; // bitboards[0] = 'x', bitboards[1] = 'o'
+
     private char winnerToken;
     private int lastMoveColumn = -1; // stores the column of the last move made on the grid
     private int lastMoveRow = -1; // stores the row of the last move made on the grid
@@ -18,33 +20,34 @@ public class Grid {
 
     // default constructor
     public Grid() {
-        grid = new char[ROW_SIZE][COLUMN_SIZE];
-
-        for (int i = 0; i < ROW_SIZE; i++) {
-            for (int j = 0; j < COLUMN_SIZE; j++) {
-                grid[i][j] = '.';
-            }
-        }
+        bitboards = new long[2];
     }
 
-    // method to display the grid
+    // method to display the grid ()
     public void displayGrid() {
         // loop through the grid to display its contents
-        for (int i = 0; i < ROW_SIZE; i++) {
+        for (int row = ROW_SIZE; row >= 0; row--) {
             System.out.print("| ");
-            for (int j = 0; j < COLUMN_SIZE; j++) {
-                // colored output
-                char cell = grid[i][j];
-                if (cell == 'x') {
-                    System.out.print(RED + cell + RESET + " | ");
-                } else if (cell == 'o') {
-                    System.out.print(YELLOW + cell + RESET + " | ");
-                } else {
-                    System.out.print(cell + " | ");
+            for (int col = 0; col < COLUMN_SIZE; col++) {
+                int bitPosition = col * ROW_SIZE + row;
+
+                
+                // player1's token
+                if ((bitboards[0] & (1L << bitPosition)) != 0) {
+                    System.out.print(RED + 'x' + RESET + " | ");
+                } 
+                // player2's token
+                else if ((bitboards[1] & (1L << bitPosition)) != 0) {
+                    System.out.print(YELLOW + 'o' + RESET + " | ");
+                }
+                // cell is empty
+                else {
+                    System.out.print(". | ");
                 }
             }
             System.out.println();
         }
+
         // display column numbers for easier gameplay
         for (int i = 1; i <= COLUMN_SIZE; i++) {
             System.out.print("  " + i + " ");
@@ -53,7 +56,7 @@ public class Grid {
     }
 
     // method to add a token in the grid
-    public void addToken(int column, char token) {
+    public void makeMove(int column, char token) {
         // loop through all the possible rows for that column starting at the bottom
         int i;
         for (i = ROW_SIZE-1; i >= 0; i--) {
@@ -260,8 +263,5 @@ public class Grid {
     }
     public int getLastMoveColumn() {
         return lastMoveColumn;
-    }
-    public char[][] getGrid() {
-        return grid;
     }
 }

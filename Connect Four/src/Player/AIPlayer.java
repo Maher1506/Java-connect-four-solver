@@ -30,7 +30,7 @@ public class AIPlayer extends Player{
         long startTime = System.nanoTime(); // timer
 
         Move bestMove = negamax(getGrid(), 17, Integer.MIN_VALUE, Integer.MAX_VALUE, 1, 0);
-        getGrid().addToken(bestMove.getMove(), getToken()); // mark cell
+        getGrid().makeMove(bestMove.getMove(), getToken()); // mark cell
 
         long endTime = System.nanoTime(); // timer
 
@@ -57,7 +57,7 @@ public class AIPlayer extends Player{
             // explore if column is not empty
             if (!getGrid().isColumnFull(i)) {
                 char currentPlayerToken = (color == 1 ? getToken() : getOpponentToken());
-                state.addToken(i, currentPlayerToken);  // move
+                state.makeMove(i, currentPlayerToken);  // move
 
                 // recursively find possible moves
                 Move move = negamax(state, depth-1, -beta, -alpha, -color, currentDepth+1);
@@ -100,7 +100,7 @@ public class AIPlayer extends Player{
     // method to choose a random column (1-7) inclusive
     private void chooseRndMove() {
         int column = ((int) (Math.random() * 7)) + 1; // choose random column
-        getGrid().addToken(column, getToken()); // mark cell
+        getGrid().makeMove(column, getToken()); // mark cell
     }
 
     // getters

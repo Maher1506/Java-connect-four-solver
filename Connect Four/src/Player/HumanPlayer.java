@@ -20,7 +20,7 @@ public class HumanPlayer extends Player {
         System.out.println("Player " + getName() + "'s turn: (" + getToken() + ")");
 
         int column = getInput(); // handle input
-        getGrid().addToken(column, getToken()); // mark cell
+        getGrid().makeMove(column, getToken()); // mark cell
         getGrid().displayGrid(); // display grid after action
     }
 
