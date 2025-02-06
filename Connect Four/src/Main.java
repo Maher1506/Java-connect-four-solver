@@ -24,7 +24,7 @@ public class Main {
         HumanPlayer p2 = new HumanPlayer("p2", 'o', grid);
         AIPlayer ai1 = new AIPlayer("AI", 'o', grid);
 
-        Game game = new Game(p1, p2, grid);
+        Game game = new Game(p1, ai1, grid);
 
         // display starting info
         game.displayStats();

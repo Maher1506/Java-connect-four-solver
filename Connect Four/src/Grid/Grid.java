@@ -21,11 +21,7 @@ public class Grid {
     private Stack<Character> winnerHistory;  // stack of all prevous winners
     private int[] height;                    // represents height of board at any given time
     private int moveCounter;                 // number of made moves until now
-
-    private char[][] grid;
-    private char winnerToken;
-    private int lastMoveColumn = -1; // stores the column of the last move made on the grid
-    private int lastMoveRow = -1; // stores the row of the last move made on the grid
+    private char winnerToken;                // determines winner of the grid
 
     // player tokens
     private static final char PLAYER_1_TOKEN = 'x';
@@ -47,13 +43,6 @@ public class Grid {
         winnerHistory = new Stack<>();
         height = new int[]{0, 7, 14, 21, 28, 35, 42};
         moveCounter = 0;
-
-        grid = new char[ROW_SIZE][COLUMN_SIZE];
-        for (int i = 0; i < ROW_SIZE; i++) {
-            for (int j = 0; j < COLUMN_SIZE; j++) {
-                grid[i][j] = '.';
-            }
-        }
     }
 
     // method to display the grid ()
@@ -96,12 +85,6 @@ public class Grid {
         bitboards[moveCounter & 1] ^= move; // assign move based on player's turn
         moveHistory.push(column);           // add move to history
         moveCounter++;                      // increment number of moves made
-    }
-
-    // updates the last move made
-    private void setLastMove(int column, int row) {
-        this.lastMoveColumn = column-1;
-        this.lastMoveRow = row;
     }
 
     // undos a move
@@ -153,18 +136,16 @@ public class Grid {
 
     // check if the requested column contains an empty cell or not
     public boolean isColumnFull(int column) {
-        return false;  // the top cell in the column is marked
+        long TOP = 0b1000000_1000000_1000000_1000000_1000000_1000000_1000000L;
+        if ((TOP & (1L << height[column])) == 0) { // the top cell in the column is marked
+            return false;
+        }
+        return true;  
     }
 
     // getters
     public char getWinnerToken() {
         return winnerToken;
-    }
-    public int getLastMoveRow() {
-        return lastMoveRow;
-    }
-    public int getLastMoveColumn() {
-        return lastMoveColumn;
     }
 
     // FOR DEBUGGING
