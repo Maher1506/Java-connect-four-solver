@@ -1,5 +1,6 @@
 package Grid;
 
+import java.util.Random;
 import java.util.Stack;
 
 public class Grid {
@@ -21,6 +22,10 @@ public class Grid {
     private int[] height;                    // represents height of board at any given time
     private int moveCounter;                 // number of made moves until now
     private char winnerToken;                // determines winner of the grid
+    private long zobristHash;                // current hash of the board
+ 
+    // zobrist table     (long[row][column][players])
+    private static final long[][][] ZOBRIST_TABLE = new long[6][7][2];
 
     // player tokens
     private static final char PLAYER_1_TOKEN = 'x';
@@ -41,6 +46,17 @@ public class Grid {
         moveHistory = new Stack<>();
         height = new int[]{0, 7, 14, 21, 28, 35, 42};
         moveCounter = 0;
+        zobristHash = 0;
+
+        // initialize zobrist table with random values
+        Random rand = new Random();
+        for (int row = 0; row < ROW_SIZE; row++) {
+            for (int col = 0; col < COLUMN_SIZE; col++) {
+                for (int player = 0; player < 2; player++) {
+                    ZOBRIST_TABLE[row][col][player] = rand.nextLong();
+                }
+            }
+        }
     }
 
     // method to display the grid ()
@@ -51,7 +67,6 @@ public class Grid {
             for (int col = 0; col < COLUMN_SIZE; col++) {
                 int bitPosition = col * COLUMN_SIZE + row;
 
-                
                 // player1's token
                 if ((bitboards[0] & (1L << bitPosition)) != 0) {
                     System.out.print(RED + PLAYER_1_TOKEN + RESET + " | ");
@@ -79,19 +94,33 @@ public class Grid {
 
     // method to add a token in the grid
     public void makeMove(int column) {
-        long move = 1L << height[column]++; // get move and increment height
-        bitboards[moveCounter & 1] ^= move; // assign move based on player's turn
+        int row = height[column] % 7;       // row of the inserted position
+        int player = moveCounter & 1;       // determine player turn (0 or 1)
+        long move = 1L << height[column];   // get the next avaialble position
+
+        bitboards[player] ^= move;          // assign move based on player's turn
+
         moveHistory.push(column);           // add move to history
         moveCounter++;                      // increment number of moves made
+
+        zobristHash ^= ZOBRIST_TABLE[row][column][player]; // update hash for state
+
+        height[column]++; // increment height of column
     }
 
     // undos a move
     public void undoMove() {
-        //winnerToken = prevWinnerToken;    // return to prevous winner
+        int column = moveHistory.pop();     // get last move
+        int player = --moveCounter & 1;     
 
-        int column = moveHistory.pop();       // get last move
-        long move = 1L << --height[column];   // get move and decrement height
-        bitboards[--moveCounter & 1] ^= move; // remove move from board
+        height[column]--;  // decrement height for the column of the prev move
+
+        int row = height[column] % 7;       // get row of last move  
+        long move = 1L << height[column]; // get move and decrement height
+
+        bitboards[player] ^= move;          // remove move from board
+
+        zobristHash ^= ZOBRIST_TABLE[row][column][player];  // restore hash for state
     }
 
     // checks whether the board is full or not (Tie)
@@ -145,6 +174,9 @@ public class Grid {
     // getters
     public char getWinnerToken() {
         return winnerToken;
+    }
+    public long getZobristHash() {
+        return zobristHash;
     }
 
     // FOR DEBUGGING

@@ -1,11 +1,14 @@
 package Player;
 
+import java.util.HashMap;
+
 import GameLogic.Move;
 import Grid.Grid;
 
 public class AIPlayer extends Player{
 
     private int[] columnOrder = {3, 2, 4, 1, 5, 0, 6};
+    private HashMap<Long, Move> transpositionTable = new HashMap<>();
 
     private long runDuration;
     private long exploredNodes;
@@ -29,13 +32,12 @@ public class AIPlayer extends Player{
     public void chooseOptimalMove() {
         long startTime = System.nanoTime(); // timer
 
-        Move bestMove = negamax(getGrid(), 21, Integer.MIN_VALUE, Integer.MAX_VALUE, 1, 0);
+        Move bestMove = negamax(getGrid(), 28, Integer.MIN_VALUE, Integer.MAX_VALUE, 1, 0);
         getGrid().makeMove(bestMove.getMove()); // mark cell
 
         long endTime = System.nanoTime(); // timer
 
         // System.out.println("AI move: " + bestMove.getMove());
-        // System.out.println("Duration: " + (endTime - startTime));
         runDuration = endTime-startTime; 
     }
     private Move negamax(Grid state, int depth, int alpha, int beta, int color, int currentDepth) {
@@ -43,9 +45,17 @@ public class AIPlayer extends Player{
         // state.displayGrid();
         // System.out.println(currentDepth);
 
+        // if the state's score is already in the trans table
+        long hash = state.getZobristHash();
+        if (transpositionTable.containsKey(hash)) {
+            return transpositionTable.get(hash);
+        }
+
         // reached terminal state or intended depth
         if (state.isTerminalState() || depth == 0) {
-            return heuristicValue(state, color, currentDepth); // return heuristic value
+            Move heuristic = heuristicValue(state, color, currentDepth);
+            transpositionTable.put(hash, heuristic); // add state to trans table
+            return heuristic; // return heuristic value
         }
 
         Move bestMove = new Move(-1, Integer.MIN_VALUE, currentDepth);
@@ -77,6 +87,7 @@ public class AIPlayer extends Player{
                 }
             }
         }
+        transpositionTable.put(hash, bestMove); // add best move to hash
         return bestMove; 
     }
     // method to evaluate the heuristic value for game states
