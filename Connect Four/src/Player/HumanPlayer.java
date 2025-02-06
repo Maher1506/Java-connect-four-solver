@@ -20,7 +20,7 @@ public class HumanPlayer extends Player {
         System.out.println("Player " + getName() + "'s turn: (" + getToken() + ")");
 
         int column = getInput(); // handle input
-        getGrid().makeMove(column, getToken()); // mark cell
+        getGrid().makeMove(column); // mark cell
         getGrid().displayGrid(); // display grid after action
     }
 
@@ -28,11 +28,11 @@ public class HumanPlayer extends Player {
     private int getInput() {
         int column;
         while (true) {
-            System.out.println("Enter a column (1-7): ");
+            System.out.println("Enter a column (0-6): ");
             try {
                 column = sc.nextInt();
 
-                if (column > 7 || column < 1) {
+                if (column > 6 || column < 0) {
                     System.out.println("OUT OF BOUNDS");
                     getGrid().displayGrid();
                 } else if (getGrid().isColumnFull(column)) { // column entered is full

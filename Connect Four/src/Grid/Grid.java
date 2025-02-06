@@ -1,13 +1,34 @@
 package Grid;
 
-public class Grid {
-    
-    private char[][] grid;
-    private long[] bitboards; // bitboards[0] = 'x', bitboards[1] = 'o'
+import java.util.Stack;
 
+public class Grid {
+
+    /*
+          6 13 20 27 34 41 48   55 62     Additional row
+        +---------------------+ 
+        | 5 12 19 26 33 40 47 | 54 61     top row
+        | 4 11 18 25 32 39 46 | 53 60
+        | 3 10 17 24 31 38 45 | 52 59
+        | 2  9 16 23 30 37 44 | 51 58
+        | 1  8 15 22 29 36 43 | 50 57
+        | 0  7 14 21 28 35 42 | 49 56 63  bottom row
+        +---------------------+
+     */
+    
+    private long[] bitboards;           // bitboards[0] = 'x', bitboards[1] = 'o'
+    private Stack<Integer> moveHistory; // stack of all prevous moves
+    private int[] height;               // represents height of board at any given time
+    private int moveCounter;            // number of made moves until now
+
+    private char[][] grid;
     private char winnerToken;
     private int lastMoveColumn = -1; // stores the column of the last move made on the grid
     private int lastMoveRow = -1; // stores the row of the last move made on the grid
+
+    // player tokens
+    private static final char PLAYER_1_TOKEN = 'x';
+    private static final char PLAYER_2_TOKEN = 'o';
 
     // board dimensions
     private static final int ROW_SIZE = 6;
@@ -21,24 +42,34 @@ public class Grid {
     // default constructor
     public Grid() {
         bitboards = new long[2];
+        moveHistory = new Stack<>();
+        height = new int[]{0, 7, 14, 21, 28, 35, 42};
+        moveCounter = 0;
+
+        grid = new char[ROW_SIZE][COLUMN_SIZE];
+        for (int i = 0; i < ROW_SIZE; i++) {
+            for (int j = 0; j < COLUMN_SIZE; j++) {
+                grid[i][j] = '.';
+            }
+        }
     }
 
     // method to display the grid ()
     public void displayGrid() {
         // loop through the grid to display its contents
-        for (int row = ROW_SIZE; row >= 0; row--) {
+        for (int row = ROW_SIZE-1; row >= 0; row--) {
             System.out.print("| ");
             for (int col = 0; col < COLUMN_SIZE; col++) {
-                int bitPosition = col * ROW_SIZE + row;
+                int bitPosition = col * COLUMN_SIZE + row;
 
                 
                 // player1's token
                 if ((bitboards[0] & (1L << bitPosition)) != 0) {
-                    System.out.print(RED + 'x' + RESET + " | ");
+                    System.out.print(RED + PLAYER_1_TOKEN + RESET + " | ");
                 } 
                 // player2's token
                 else if ((bitboards[1] & (1L << bitPosition)) != 0) {
-                    System.out.print(YELLOW + 'o' + RESET + " | ");
+                    System.out.print(YELLOW + PLAYER_2_TOKEN + RESET + " | ");
                 }
                 // cell is empty
                 else {
@@ -49,24 +80,20 @@ public class Grid {
         }
 
         // display column numbers for easier gameplay
-        for (int i = 1; i <= COLUMN_SIZE; i++) {
+        for (int i = 0; i < COLUMN_SIZE; i++) {
             System.out.print("  " + i + " ");
         }
         System.out.println();
+
+        //displayBitboards();
     }
 
     // method to add a token in the grid
-    public void makeMove(int column, char token) {
-        // loop through all the possible rows for that column starting at the bottom
-        int i;
-        for (i = ROW_SIZE-1; i >= 0; i--) {
-            // if reached an empty cell mark the cell
-            if (grid[i][column-1] == '.') {
-                grid[i][column-1] = token; // mark the cell
-                break;
-            }
-        }
-        setLastMove(column, i); // update last move
+    public void makeMove(int column) {
+        long move = 1L << height[column]++; // get move
+        bitboards[moveCounter & 1] ^= move; // assign move based on player's turn
+        moveHistory.push(column);           // add move to history
+        moveCounter++;                      // increment number of moves made
     }
 
     // updates the last move made
@@ -251,7 +278,7 @@ public class Grid {
 
     // check if the requested column contains an empty cell or not
     public boolean isColumnFull(int column) {
-        return grid[0][column-1] != '.'; // the top cell in the column is marked
+        return false;//grid[0][column-1] != '.'; // the top cell in the column is marked
     }
 
     // getters
@@ -263,5 +290,30 @@ public class Grid {
     }
     public int getLastMoveColumn() {
         return lastMoveColumn;
+    }
+
+    // FOR DEBUGGING
+    public void displayBitboards() {
+        System.out.println("Player 1 (X) Bitboard:");
+        printBitboard(bitboards[0], 'X');
+        
+        System.out.println("\nPlayer 2 (O) Bitboard:");
+        printBitboard(bitboards[1], 'O');
+    }
+    
+    private void printBitboard(long bitboard, char token) {
+        for (int row = ROW_SIZE - 1; row >= 0; row--) { // Start from top row
+            for (int col = 0; col < COLUMN_SIZE; col++) {
+                int bitPosition = col * COLUMN_SIZE + row; // Correct column-major order
+    
+                if ((bitboard & (1L << bitPosition)) != 0) {
+                    System.out.print(token + " ");
+                } else {
+                    System.out.print(". ");
+                }
+            }
+            System.out.println();
+        }
+        System.out.println();
     }
 }

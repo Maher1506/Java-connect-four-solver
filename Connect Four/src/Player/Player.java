@@ -20,14 +20,6 @@ public abstract class Player {
         System.out.println("Name: " + name + " | Token: " + token);
     }
 
-    public char getOpponentToken() {
-        if (token == 'x') {
-            return 'o';
-        } else {
-            return 'x';
-        }
-    }
-
     // setters 
     public void setName(String name) {
         this.name = name;

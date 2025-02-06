@@ -5,7 +5,7 @@ import Grid.Grid;
 
 public class AIPlayer extends Player{
 
-    private int[] columnOrder = {4, 3, 5, 2, 6, 1, 7};
+    private int[] columnOrder = {3, 2, 4, 1, 5, 0, 6};
 
     private long runDuration;
     private long exploredNodes;
@@ -30,7 +30,7 @@ public class AIPlayer extends Player{
         long startTime = System.nanoTime(); // timer
 
         Move bestMove = negamax(getGrid(), 17, Integer.MIN_VALUE, Integer.MAX_VALUE, 1, 0);
-        getGrid().makeMove(bestMove.getMove(), getToken()); // mark cell
+        getGrid().makeMove(bestMove.getMove()); // mark cell
 
         long endTime = System.nanoTime(); // timer
 
@@ -40,6 +40,7 @@ public class AIPlayer extends Player{
     }
     private Move negamax(Grid state, int depth, int alpha, int beta, int color, int currentDepth) {
         exploredNodes++;
+
         // reached terminal state or intended depth
         if (state.isTerminalState() || depth == 0) {
             return heuristicValue(state, color, currentDepth); // return heuristic value
@@ -56,8 +57,7 @@ public class AIPlayer extends Player{
         for (int i : columnOrder) {
             // explore if column is not empty
             if (!getGrid().isColumnFull(i)) {
-                char currentPlayerToken = (color == 1 ? getToken() : getOpponentToken());
-                state.makeMove(i, currentPlayerToken);  // move
+                state.makeMove(i);  // move
 
                 // recursively find possible moves
                 Move move = negamax(state, depth-1, -beta, -alpha, -color, currentDepth+1);
@@ -97,10 +97,10 @@ public class AIPlayer extends Player{
         }
     }
 
-    // method to choose a random column (1-7) inclusive
+    // method to choose a random column (0-6) inclusive
     private void chooseRndMove() {
-        int column = ((int) (Math.random() * 7)) + 1; // choose random column
-        getGrid().makeMove(column, getToken()); // mark cell
+        int column = ((int) (Math.random() * 7)); // choose random column
+        getGrid().makeMove(column); // mark cell
     }
 
     // getters
