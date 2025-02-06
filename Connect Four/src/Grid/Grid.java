@@ -91,7 +91,7 @@ public class Grid {
 
         int column = moveHistory.pop();       // get last move
         long move = 1L << --height[column];   // get move and decrement height
-        bitboards[--moveCounter & 1] ^= move; // assign move based on player's turn and decrement counter
+        bitboards[--moveCounter & 1] ^= move; // remove move from board
     }
 
     // checks whether the board is full or not (Tie)
@@ -117,14 +117,15 @@ public class Grid {
 
     // check if a bitboard is a winning one
     private boolean isWin(long bitboard) {
-        // horizontal, vertical, diagonal /, diagonal \
-        int[] directions = {1, 7, 6, 8};
-        long bb;
-        for (int dir : directions) {
-            bb = bitboard & (bitboard >> dir);
-            if ((bb & (bb >> (2 * dir))) != 0 ) return true;
-        }
-        return false;
+        return checkDirection(bitboard, 1) ||  // Horizontal
+               checkDirection(bitboard, 7) ||  // Vertical
+               checkDirection(bitboard, 6) ||  // Diagonal /
+               checkDirection(bitboard, 8);    // Diagonal \
+    }
+    
+    private boolean checkDirection(long bitboard, int shift) {
+        long bb = bitboard & (bitboard >> shift);
+        return (bb & (bb >> (2 * shift))) != 0;
     }
 
     // checks whether the game ended or not

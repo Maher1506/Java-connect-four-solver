@@ -40,6 +40,8 @@ public class AIPlayer extends Player{
     }
     private Move negamax(Grid state, int depth, int alpha, int beta, int color, int currentDepth) {
         exploredNodes++;
+        // state.displayGrid();
+        // System.out.println(currentDepth);
 
         // reached terminal state or intended depth
         if (state.isTerminalState() || depth == 0) {
@@ -51,7 +53,7 @@ public class AIPlayer extends Player{
         // loop through all possible available moves (exploring the center columns first)
         for (int i : columnOrder) {
             // explore if column is not empty
-            if (!getGrid().isColumnFull(i)) {
+            if (!state.isColumnFull(i)) {
                 //char lastWinnerToken = state.getWinnerToken(); // store winner of original state
                 state.makeMove(i);  // move
 
