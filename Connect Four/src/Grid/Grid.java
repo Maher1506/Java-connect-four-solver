@@ -105,8 +105,8 @@ public class Grid {
     }
 
     // undos a move
-    public void undoMove() {
-        //winnerToken = winnerHistory.pop();    // return to prevous winner
+    public void undoMove(char prevWinnerToken) {
+        winnerToken = prevWinnerToken;    // return to prevous winner
 
         int column = moveHistory.pop();       // get last move
         long move = 1L << --height[column];   // get move and decrement height
@@ -121,151 +121,29 @@ public class Grid {
         return ((bitboards[0] | bitboards[1]) & fullMask) == fullMask;
     }
 
-    // checks whether a player won the game by checking the neighbors
-    // of the last inserted token (the player can only win from their last move)
+    // checks whether a player won the game or not
     private boolean isGameWon() {
-        // if a move is made (not start of game) AND the last move results in a winning condition
-        if ((lastMoveColumn != -1 && lastMoveRow != -1) &&
-            (checkCellNeighbors(lastMoveRow, lastMoveColumn, grid[lastMoveRow][lastMoveColumn]))) { 
-
-            winnerToken = grid[lastMoveRow][lastMoveColumn]; // update winner
+        if (isWin(bitboards[0])) {
+            winnerToken = PLAYER_1_TOKEN;
             return true;
+        } else if (isWin(bitboards[1])) {
+            winnerToken = PLAYER_2_TOKEN;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    // check if a bitboard is a winning one
+    private boolean isWin(long bitboard) {
+        // horizontal, vertical, diagonal /, diagonal \
+        int[] directions = {1, 7, 6, 8};
+        long bb;
+        for (int dir : directions) {
+            bb = bitboard & (bitboard >> dir);
+            if ((bb & (bb >> (2 * dir))) != 0 ) return true;
         }
         return false;
-    }
-
-    // check if the requested cell is part of any winning streak
-    private boolean checkCellNeighbors(int row, int column, char token) {
-        // return true if the cell is part of ANY winning streak
-        return checkHorizontal(row, column, token) ||
-               checkVertical(row, column, token) ||
-               checkRightDiagonal(row, column, token) ||
-               checkLeftDiagonal(row, column, token);
-    }
-
-    // checks if the cell is part of a horizontal winning streak
-    private boolean checkHorizontal(int row, int column, char token) {
-        // counts the number of consecutive same tokens found
-        int streakCounter = 1; // accounts for the token itself
-        int i; // index
-
-        // move left until a different token is found or the reached the left end of the board
-        i = column-1; // start at the cell left to the current cell
-        while (i >= 0 && grid[row][i] == token) {
-            streakCounter++; // same token found
-            i--; // move left
-        }
-
-        // check if reached a winning streak before checking the right side
-        if (streakCounter >= 4) {
-            return true;
-        }
-
-        // check for the right side of the cell
-        i = column+1; // start at the cell right to the current cell
-        while (i < COLUMN_SIZE && grid[row][i] == token) {
-            streakCounter++;
-            i++; // move right
-        }
-
-        // check if reached a winning streak
-        return streakCounter >= 4;
-    }
-
-    // checks if the cell is part of a vertical winning streak
-    private boolean checkVertical(int row, int column, char token) {
-        // counts the number of consecutive same tokens found
-        int streakCounter = 1; // accounts for the token itself
-        int i; // index
-
-        // noo need to check upwards since it's impossible to place a token and have
-        // other tokens above it
-
-        // check downwards until a different token is found or the end of the board
-        i = row + 1; // start at the immediate lower cell
-        while (i < ROW_SIZE && grid[i][column] == token) {
-            streakCounter++;
-            i++; // move down
-        }
-
-        // check if a winning streak is found
-        return streakCounter >= 4;
-    }
-
-    // checks all the diagonals in this form '\'
-    private boolean checkRightDiagonal(int row, int column, char token) {
-        // counts the number of consecutive same tokens found
-        int streakCounter = 1; // accounts for the token itself
-        int i; // row index
-        int j; // column index
-
-        // check the top left part until a different token or end of board reached
-        // start at the immediate top left cell
-        i = row - 1;
-        j = column - 1;
-        while ((i >= 0 && j >= 0) && grid[i][j] == token) {
-            streakCounter++;
-            // move up left
-            i--;
-            j--;
-        }
-
-        // check if streak found before checking the bottom right part
-        if (streakCounter >= 4) {
-            return true;
-        }
-
-        // check the bottom right part
-        // start at the immediate bottom right cell
-        i = row + 1;
-        j = column + 1;
-        while ((i < ROW_SIZE && j < COLUMN_SIZE) && grid[i][j] == token) {
-            streakCounter++;
-            // move down right
-            i++;
-            j++;
-        }
-
-        // check if a streak is found
-        return streakCounter >= 4;
-    }
-
-    // checks all the diagonals in this form '/'
-    private boolean checkLeftDiagonal(int row, int column, char token) {
-        // counts the number of consecutive same tokens found
-        int streakCounter = 1; // accounts for the token itself
-        int i; // row index
-        int j; // column index
-
-        // check for the top right part until a different token or end of grid is reached
-        // start at the immediate top right cell
-        i = row - 1;
-        j = column + 1;
-        while ((i >= 0 && j < COLUMN_SIZE) && grid[i][j] == token) {
-            streakCounter++;
-            // move up right
-            i--;
-            j++;
-        }
-
-        // check if a streak is reached before checking the bottom left part
-        if (streakCounter >= 4) {
-            return true;
-        }
-
-        // check for the bottom left part
-        // start at the immediate bottom left cell
-        i = row + 1;
-        j = column - 1;
-        while ((i < ROW_SIZE && j >= 0) && grid[i][j] == token) {
-            streakCounter++;
-            // move down left
-            i++;
-            j--;
-        }
-
-        // check if a streak is reached
-        return streakCounter >= 4;
     }
 
     // checks whether the game ended or not
@@ -275,7 +153,7 @@ public class Grid {
 
     // check if the requested column contains an empty cell or not
     public boolean isColumnFull(int column) {
-        return false;//grid[0][column-1] != '.'; // the top cell in the column is marked
+        return false;  // the top cell in the column is marked
     }
 
     // getters

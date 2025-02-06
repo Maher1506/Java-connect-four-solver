@@ -22,6 +22,7 @@ public class Game {
 
     // displays the winner or a tie
     public void displayEndStats() {
+        System.out.println("Game Ended!");
         char winnerToken = grid.getWinnerToken();
 
         if (winnerToken == player1.getToken()) { // player 1 won

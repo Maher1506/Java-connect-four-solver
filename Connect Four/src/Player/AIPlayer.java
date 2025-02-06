@@ -52,13 +52,13 @@ public class AIPlayer extends Player{
         for (int i : columnOrder) {
             // explore if column is not empty
             if (!getGrid().isColumnFull(i)) {
-                //char lastWinnerToken = state.getWinnerToken(); // store winner of original state
+                char lastWinnerToken = state.getWinnerToken(); // store winner of original state
                 state.makeMove(i);  // move
 
                 // recursively find possible moves
                 Move move = negamax(state, depth-1, -beta, -alpha, -color, currentDepth+1);
 
-                state.undoMove(); // undo move
+                state.undoMove(lastWinnerToken); // undo move
 
                 int negatedScore = -move.getScore(); // negate score (instead of -negamax())
 
