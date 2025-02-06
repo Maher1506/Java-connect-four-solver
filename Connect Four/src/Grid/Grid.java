@@ -16,10 +16,11 @@ public class Grid {
         +---------------------+
      */
     
-    private long[] bitboards;           // bitboards[0] = 'x', bitboards[1] = 'o'
-    private Stack<Integer> moveHistory; // stack of all prevous moves
-    private int[] height;               // represents height of board at any given time
-    private int moveCounter;            // number of made moves until now
+    private long[] bitboards;                // bitboards[0] = 'x', bitboards[1] = 'o'
+    private Stack<Integer> moveHistory;      // stack of all prevous moves
+    private Stack<Character> winnerHistory;  // stack of all prevous winners
+    private int[] height;                    // represents height of board at any given time
+    private int moveCounter;                 // number of made moves until now
 
     private char[][] grid;
     private char winnerToken;
@@ -43,6 +44,7 @@ public class Grid {
     public Grid() {
         bitboards = new long[2];
         moveHistory = new Stack<>();
+        winnerHistory = new Stack<>();
         height = new int[]{0, 7, 14, 21, 28, 35, 42};
         moveCounter = 0;
 
@@ -90,7 +92,7 @@ public class Grid {
 
     // method to add a token in the grid
     public void makeMove(int column) {
-        long move = 1L << height[column]++; // get move
+        long move = 1L << height[column]++; // get move and increment height
         bitboards[moveCounter & 1] ^= move; // assign move based on player's turn
         moveHistory.push(column);           // add move to history
         moveCounter++;                      // increment number of moves made
@@ -103,13 +105,12 @@ public class Grid {
     }
 
     // undos a move
-    public void undoMove(int column, int prevLastRow, int prevLastCol, char prevWinner) {
-        grid[lastMoveRow][lastMoveColumn] = '.'; // undo cell token
-        
-        // undo grid values
-        lastMoveRow = prevLastRow;
-        lastMoveColumn = prevLastCol;
-        winnerToken = prevWinner;
+    public void undoMove() {
+        //winnerToken = winnerHistory.pop();    // return to prevous winner
+
+        int column = moveHistory.pop();       // get last move
+        long move = 1L << --height[column];   // get move and decrement height
+        bitboards[--moveCounter & 1] ^= move; // assign move based on player's turn and decrement counter
     }
 
     // checks whether the board is full or not (Tie)

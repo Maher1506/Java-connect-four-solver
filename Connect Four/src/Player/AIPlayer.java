@@ -46,23 +46,19 @@ public class AIPlayer extends Player{
             return heuristicValue(state, color, currentDepth); // return heuristic value
         }
 
-        // store prevous state data
-        int lastMoveRow = state.getLastMoveRow();
-        int lastMoveColumn = state.getLastMoveColumn();
-        char lastWinnerToken = state.getWinnerToken();
-
         Move bestMove = new Move(-1, Integer.MIN_VALUE, currentDepth);
 
         // loop through all possible available moves (exploring the center columns first)
         for (int i : columnOrder) {
             // explore if column is not empty
             if (!getGrid().isColumnFull(i)) {
+                //char lastWinnerToken = state.getWinnerToken(); // store winner of original state
                 state.makeMove(i);  // move
 
                 // recursively find possible moves
                 Move move = negamax(state, depth-1, -beta, -alpha, -color, currentDepth+1);
 
-                state.undoMove(i, lastMoveRow, lastMoveColumn, lastWinnerToken); // undo move
+                state.undoMove(); // undo move
 
                 int negatedScore = -move.getScore(); // negate score (instead of -negamax())
 
