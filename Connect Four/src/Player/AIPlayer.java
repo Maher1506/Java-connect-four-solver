@@ -29,7 +29,7 @@ public class AIPlayer extends Player{
     public void chooseOptimalMove() {
         long startTime = System.nanoTime(); // timer
 
-        Move bestMove = negamax(getGrid(), 17, Integer.MIN_VALUE, Integer.MAX_VALUE, 1, 0);
+        Move bestMove = negamax(getGrid(), 21, Integer.MIN_VALUE, Integer.MAX_VALUE, 1, 0);
         getGrid().makeMove(bestMove.getMove()); // mark cell
 
         long endTime = System.nanoTime(); // timer
@@ -52,13 +52,13 @@ public class AIPlayer extends Player{
         for (int i : columnOrder) {
             // explore if column is not empty
             if (!getGrid().isColumnFull(i)) {
-                char lastWinnerToken = state.getWinnerToken(); // store winner of original state
+                //char lastWinnerToken = state.getWinnerToken(); // store winner of original state
                 state.makeMove(i);  // move
 
                 // recursively find possible moves
                 Move move = negamax(state, depth-1, -beta, -alpha, -color, currentDepth+1);
 
-                state.undoMove(lastWinnerToken); // undo move
+                state.undoMove(); // undo move
 
                 int negatedScore = -move.getScore(); // negate score (instead of -negamax())
 

@@ -18,7 +18,6 @@ public class Grid {
     
     private long[] bitboards;                // bitboards[0] = 'x', bitboards[1] = 'o'
     private Stack<Integer> moveHistory;      // stack of all prevous moves
-    private Stack<Character> winnerHistory;  // stack of all prevous winners
     private int[] height;                    // represents height of board at any given time
     private int moveCounter;                 // number of made moves until now
     private char winnerToken;                // determines winner of the grid
@@ -40,7 +39,6 @@ public class Grid {
     public Grid() {
         bitboards = new long[2];
         moveHistory = new Stack<>();
-        winnerHistory = new Stack<>();
         height = new int[]{0, 7, 14, 21, 28, 35, 42};
         moveCounter = 0;
     }
@@ -88,8 +86,8 @@ public class Grid {
     }
 
     // undos a move
-    public void undoMove(char prevWinnerToken) {
-        winnerToken = prevWinnerToken;    // return to prevous winner
+    public void undoMove() {
+        //winnerToken = prevWinnerToken;    // return to prevous winner
 
         int column = moveHistory.pop();       // get last move
         long move = 1L << --height[column];   // get move and decrement height

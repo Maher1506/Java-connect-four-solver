@@ -8,14 +8,14 @@ public class Main {
     public static void main(String[] args) {
         
         /* STATS
-         * depth: 17 
+         * depth: 21 
          * iterations: 70
-         * avg time: 2189663655 nano(s) = 2.189663655 (s) 
-         * nodes visited: 80,290,871
+         * avg time: 2341458425 nano(s) = 2.341458425 (s) 
+         * nodes visited: 60,046,695
         */
-        //benchMarkAI(70);
+        benchMarkAI(70);
 
-        gameLoop();        
+        //gameLoop();        
     }
 
     private static void gameLoop() {
