@@ -8,6 +8,7 @@ public class AIPlayer extends Player{
     private int[] columnOrder = {4, 3, 5, 2, 6, 1, 7};
 
     private long runDuration;
+    private long exploredNodes;
     
     public AIPlayer(String name, char token, Grid grid) {
         super(name, token, grid);
@@ -38,6 +39,7 @@ public class AIPlayer extends Player{
         runDuration = endTime-startTime; 
     }
     private Move negamax(Grid state, int depth, int alpha, int beta, int color, int currentDepth) {
+        exploredNodes++;
         // reached terminal state or intended depth
         if (state.isTerminalState() || depth == 0) {
             return heuristicValue(state, color, currentDepth); // return heuristic value
@@ -104,5 +106,8 @@ public class AIPlayer extends Player{
     // getters
     public long getRunDuration() {
         return runDuration;
+    }
+    public long getExploredNodes() {
+        return exploredNodes;
     }
 }

@@ -7,7 +7,12 @@ public class Main {
     
     public static void main(String[] args) {
         
-        // depth: 17 | iterations: 70 | avg time: 2189663655 nano(s) = 2.189663655 (s)
+        /* STATS
+         * depth: 17 
+         * iterations: 70
+         * avg time: 2189663655 nano(s) = 2.189663655 (s) 
+         * nodes visited: 80,290,871
+        */
         benchMarkAI(70);
 
         //gameLoop();        
@@ -51,7 +56,9 @@ public class Main {
             if (i >= warmups) {
                 totalTime += ai1.getRunDuration();
             }
+            System.out.println(ai1.getExploredNodes());
         }
-        System.out.println("AVG: " + totalTime/iterations);
+
+        System.out.println("Mean Time (nano): " + totalTime/iterations);
     }
 }
