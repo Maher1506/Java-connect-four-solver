@@ -67,6 +67,7 @@ The **Unbeatable AI** uses the **Minimax Algorithm** to find the best move by:
 - Add alpha-beta pruning for optimization
 
 ## References and Resources
+- [Main tutorial I followed](http://blog.gamesolver.org/solving-connect-four/01-introduction/)
 - [Connect 4 Wikipedia page](https://en.wikipedia.org/wiki/Connect_Four)
 - [Connect 4 Solver](https://connect4.gamesolver.org/)
 - **Alpha-Beta Pruning**
@@ -74,4 +75,24 @@ The **Unbeatable AI** uses the **Minimax Algorithm** to find the best move by:
   - [JavaTpoint article](https://www.javatpoint.com/ai-alpha-beta-pruning)
   - My OneNote Note:
 - **Negamax Algorithm**
-  - [Negamax Wikipedia page](https://en.wikipedia.org/wiki/Negamax) 
+  - [Negamax Wikipedia page](https://en.wikipedia.org/wiki/Negamax)
+  - My OneNote Note:
+- **Bitboards**
+  - [Bitboards and Connect 4](https://github.com/denkspuren/BitboardC4/blob/master/BitboardDesign.md)
+  - My OneNote Note:
+- **Transposition Table and Zobrist Hashing**
+  - My OneNote Note: 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
