@@ -12,6 +12,7 @@ public class AIPlayer extends Player{
 
     private long runDuration;
     private long exploredNodes;
+    private int aiMove;
     
     public AIPlayer(String name, char token, Grid grid) {
         super(name, token, grid);
@@ -33,12 +34,25 @@ public class AIPlayer extends Player{
         long startTime = System.nanoTime(); // timer
 
         MoveScore bestMove = negamax(getGrid(), 18, Integer.MIN_VALUE, Integer.MAX_VALUE, 1, 0);
+        
+        // MoveScore bestMove = new MoveScore(-1, Integer.MIN_VALUE);
+        // int maxDepth = 18;
+        // for (int d = 1; d <= maxDepth; d++) {
+        //     MoveScore move = negamax(getGrid(), d, Integer.MIN_VALUE, Integer.MAX_VALUE, 1, 0);
+            
+        //     if (move.getMove() != -1) {
+        //         bestMove = move;
+        //         System.out.println(bestMove.getMove());
+        //     }
+        // }
+        
         getGrid().makeMove(bestMove.getMove()); // mark cell
 
         long endTime = System.nanoTime(); // timer
 
         // System.out.println("AI move: " + bestMove.getMove());
         runDuration = endTime-startTime; 
+        aiMove = bestMove.getMove();
     }
     private MoveScore negamax(Grid state, int depth, int alpha, int beta, int color, int currentDepth) {
         exploredNodes++;
@@ -52,7 +66,7 @@ public class AIPlayer extends Player{
         }
 
         // reached terminal state or intended depth
-        if (state.isTerminalState() || depth == 0) {
+        if (state.isTerminalState()){ //|| depth == 0) {
             MoveScore heuristic = heuristicValue(state, color);
             transpositionTable.put(hash, heuristic); // add state to trans table
             return heuristic; // return heuristic value
@@ -117,5 +131,8 @@ public class AIPlayer extends Player{
     }
     public long getExploredNodes() {
         return exploredNodes;
+    }
+    public int getAIMove() {
+        return aiMove;
     }
 }

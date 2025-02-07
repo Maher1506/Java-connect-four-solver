@@ -27,7 +27,7 @@ public class Main {
 
         Game game = new Game(p1, ai1, grid);
 
-        //initialGameState(grid);
+        initialGameState(grid);
 
         // display starting info
         game.displayStats();
@@ -45,14 +45,11 @@ public class Main {
         game.displayEndStats();
     }
     private static void initialGameState(Grid grid) {
-        grid.makeMove(4);
-        grid.makeMove(4);
-        grid.makeMove(6);
-        grid.makeMove(5);
-        grid.makeMove(3);
-        grid.makeMove(3);
-        grid.makeMove(2);
-        grid.makeMove(5);
+        // 44653325(2), 330313(3)
+        String moves = "330313";
+        for (int i = 0; i < moves.length(); i++) {
+            grid.makeMove(moves.charAt(i) - '0');
+        }
     }
 
     private static void benchMarkAI(int iterations) {
