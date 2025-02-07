@@ -11,12 +11,12 @@ public class Main {
          * depth: 18 
          * move: column 4
          * iterations: 70
-         * avg time: 5120168455 nano(s) = 5120168455 (s) 
-         * nodes visited: 12,704,647
+         * avg time: 3593073867 nano(s) = 3.593073867 (s)
+         * nodes visited: 15,718,163
         */
-        //benchMarkAI(70);
+        benchMarkAI(70);
 
-        gameLoop();        
+        //gameLoop();        
     }
 
     private static void gameLoop() {
@@ -27,7 +27,7 @@ public class Main {
 
         Game game = new Game(p1, ai1, grid);
 
-        initialGameState(grid);
+        //initialGameState(grid);
 
         // display starting info
         game.displayStats();
@@ -46,7 +46,7 @@ public class Main {
     }
     private static void initialGameState(Grid grid) {
         // 44653325(2), 330313(3)
-        String moves = "330313";
+        String moves = "44653325";
         for (int i = 0; i < moves.length(); i++) {
             grid.makeMove(moves.charAt(i) - '0');
         }
@@ -66,7 +66,7 @@ public class Main {
             if (i >= warmups) {
                 totalTime += ai1.getRunDuration();
             }
-            // System.out.println("Explored nodes: " + ai1.getExploredNodes());
+            System.out.println("Explored nodes: " + ai1.getExploredNodes());
             // System.out.println("Duration: " + ai1.getRunDuration());
         }
 

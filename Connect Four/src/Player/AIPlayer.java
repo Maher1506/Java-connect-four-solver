@@ -2,13 +2,14 @@ package Player;
 
 import java.util.HashMap;
 
-import GameLogic.MoveScore;
+import Enums.MoveFlag;
+import GameLogic.MoveEntry;
 import Grid.Grid;
 
 public class AIPlayer extends Player{
 
     private int[] columnOrder = {3, 2, 4, 1, 5, 0, 6};
-    private HashMap<Long, MoveScore> transpositionTable = new HashMap<>();
+    private HashMap<Long, MoveEntry> transpositionTable = new HashMap<>();
 
     private long runDuration;
     private long exploredNodes;
@@ -33,7 +34,7 @@ public class AIPlayer extends Player{
     public void chooseOptimalMove() {
         long startTime = System.nanoTime(); // timer
 
-        MoveScore bestMove = negamax(getGrid(), 18, Integer.MIN_VALUE, Integer.MAX_VALUE, 1, 0);
+        MoveEntry bestMove = negamax(getGrid(), 18, Integer.MIN_VALUE, Integer.MAX_VALUE, 1, 0);
         
         // MoveScore bestMove = new MoveScore(-1, Integer.MIN_VALUE);
         // int maxDepth = 18;
@@ -54,43 +55,52 @@ public class AIPlayer extends Player{
         runDuration = endTime-startTime; 
         aiMove = bestMove.getMove();
     }
-    private MoveScore negamax(Grid state, int depth, int alpha, int beta, int color, int currentDepth) {
+    private MoveEntry negamax(Grid state, int depth, int alpha, int beta, int color, int currentDepth) {
         exploredNodes++;
         // state.displayGrid();
         // System.out.println("Depht: " + currentDepth);
 
-        // if the state's score is already in the trans table
+        int originalAlpha = alpha;
         long hash = state.getZobristHash();
+
+        // Trans Table lookup
         if (transpositionTable.containsKey(hash)) {
-            return transpositionTable.get(hash);
+            MoveEntry entry = transpositionTable.get(hash);
+
+            if (entry.getDepth() >= depth) {
+                if (entry.getFlag() == MoveFlag.EXACT) {
+                    return entry;
+                } else if (entry.getFlag() == MoveFlag.LOWERBOUND) {
+                    alpha = Math.max(alpha, entry.getScore());
+                } else if (entry.getFlag() == MoveFlag.UPPERBOUND) {
+                    beta = Math.min(beta, entry.getScore());
+                }
+
+                if (beta <= alpha) return new MoveEntry(-1, entry.getScore(), depth);
+            }
         }
 
         // reached terminal state or intended depth
-        if (state.isTerminalState()){ //|| depth == 0) {
-            MoveScore heuristic = heuristicValue(state, color);
-            transpositionTable.put(hash, heuristic); // add state to trans table
-            return heuristic; // return heuristic value
+        if (state.isTerminalState() || depth == 0) {
+            return heuristicValue(state, color, depth); // return heuristic value
         }
 
-        MoveScore bestMove = new MoveScore(-1, Integer.MIN_VALUE);
+        MoveEntry bestMove = new MoveEntry(-1, Integer.MIN_VALUE, depth);
 
         // loop through all possible available moves (exploring the center columns first)
         for (int i : columnOrder) {
             // explore if column is not empty
             if (!state.isColumnFull(i)) {
-                //char lastWinnerToken = state.getWinnerToken(); // store winner of original state
                 state.makeMove(i);  // move
-
                 // recursively find possible moves
-                MoveScore move = negamax(state, depth-1, -beta, -alpha, -color, currentDepth+1);
-
+                MoveEntry move = negamax(state, depth-1, -beta, -alpha, -color, currentDepth+1);
                 state.undoMove(); // undo move
 
                 int negatedScore = -move.getScore(); // negate score (instead of -negamax())
 
                 // if new move has higher score OR same score but lower depth
                 if ((negatedScore > bestMove.getScore())) {
-                    bestMove = new MoveScore(i, negatedScore);
+                    bestMove = new MoveEntry(i, negatedScore, depth);
                 }
                 
                 alpha = Math.max(alpha, negatedScore); // update alpha value
@@ -100,22 +110,32 @@ public class AIPlayer extends Player{
                 }
             }
         }
+
+        // store in Trans Table
+        if (bestMove.getScore() <= originalAlpha) {
+            bestMove.setFlag(MoveFlag.UPPERBOUND);
+        } else if (bestMove.getScore() >= beta) {
+            bestMove.setFlag(MoveFlag.LOWERBOUND);
+        } else {
+            bestMove.setFlag(MoveFlag.EXACT);
+        }
         transpositionTable.put(hash, bestMove); // add best move to hash
+
         return bestMove; 
     }
     // method to evaluate the heuristic value for game states
-    private MoveScore heuristicValue(Grid state, int color) {
+    private MoveEntry heuristicValue(Grid state, int color, int depth) {
         // game is a tie
         if (state.getWinnerToken() == '\0') {
-            return new MoveScore(-1, color * 0);
+            return new MoveEntry(-1, color * 0, depth);
         }
         // max player (us) won
         else if (state.getWinnerToken() == getToken()) {
-            return new MoveScore(-1, color * (100 - state.getMoveCounter()));
+            return new MoveEntry(-1, color * (1000 - state.getMoveCounter()), depth);
         }
         // min player won (opponent)
         else {
-            return new MoveScore(-1, color * (state.getMoveCounter() - 100));
+            return new MoveEntry(-1, color * (-1000 + state.getMoveCounter()), depth);
         }
     }
 
