@@ -1,14 +1,12 @@
 package GameLogic;
 
-public class Move {
+public class MoveScore {
     private int move; // column
     private int score; // minimax score
-    private int depth; // depth in game tree
 
-    public Move(int move, int score, int depth) {
+    public MoveScore(int move, int score) {
         this.move = move;
         this.score = score;
-        this.depth = depth;
     }
     
     // getters
@@ -17,8 +15,5 @@ public class Move {
     }
     public int getScore() {
         return score;
-    }
-    public int getDepth() {
-        return depth;
     }
 }

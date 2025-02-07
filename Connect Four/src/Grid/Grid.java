@@ -178,6 +178,9 @@ public class Grid {
     public long getZobristHash() {
         return zobristHash;
     }
+    public int getMoveCounter() {
+        return moveCounter;
+    }
 
     // FOR DEBUGGING
     public void displayBitboards() {

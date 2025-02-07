@@ -8,11 +8,11 @@ public class Main {
     public static void main(String[] args) {
         
         /* STATS
-         * depth: 21 
+         * depth: 18 
          * move: column 4
          * iterations: 70
-         * avg time: 2341458425 nano(s) = 2.341458425 (s) 
-         * nodes visited: 60,046,695     
+         * avg time: 5120168455 nano(s) = 5120168455 (s) 
+         * nodes visited: 12,704,647
         */
         //benchMarkAI(70);
 
@@ -26,6 +26,8 @@ public class Main {
         AIPlayer ai1 = new AIPlayer("AI", 'o', grid);
 
         Game game = new Game(p1, ai1, grid);
+
+        //initialGameState(grid);
 
         // display starting info
         game.displayStats();
@@ -42,6 +44,16 @@ public class Main {
         
         game.displayEndStats();
     }
+    private static void initialGameState(Grid grid) {
+        grid.makeMove(4);
+        grid.makeMove(4);
+        grid.makeMove(6);
+        grid.makeMove(5);
+        grid.makeMove(3);
+        grid.makeMove(3);
+        grid.makeMove(2);
+        grid.makeMove(5);
+    }
 
     private static void benchMarkAI(int iterations) {
         long totalTime = 0;
@@ -57,8 +69,8 @@ public class Main {
             if (i >= warmups) {
                 totalTime += ai1.getRunDuration();
             }
-            System.out.println("Explored nodes: " + ai1.getExploredNodes());
-            System.out.println("Duration: " + ai1.getRunDuration());
+            // System.out.println("Explored nodes: " + ai1.getExploredNodes());
+            // System.out.println("Duration: " + ai1.getRunDuration());
         }
 
         System.out.println("Mean Time (nano): " + totalTime/iterations);
