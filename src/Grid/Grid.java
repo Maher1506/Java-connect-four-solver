@@ -3,7 +3,6 @@ package Grid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.Stack;
 
 public class Grid {
 
@@ -20,7 +19,7 @@ public class Grid {
      */
     
     private long[] bitboards;                // bitboards[0] = 'x', bitboards[1] = 'o'
-    private Stack<Integer> moveHistory;      // stack of all prevous moves
+    private List<Integer> moveHistory;      // stack of all prevous moves
     private int[] height;                    // represents height of board at any given time
     private int moveCounter;                 // number of made moves until now
     private char winnerToken;                // determines winner of the grid
@@ -45,7 +44,7 @@ public class Grid {
     // default constructor
     public Grid() {
         bitboards = new long[2];
-        moveHistory = new Stack<>();
+        moveHistory = new ArrayList<>();
         height = new int[]{0, 7, 14, 21, 28, 35, 42};
         moveCounter = 0;
         zobristHash = 0;
@@ -102,7 +101,7 @@ public class Grid {
 
         bitboards[player] ^= move;          // assign move based on player's turn
 
-        moveHistory.push(column);           // add move to history
+        moveHistory.add(column);           // add move to history
         moveCounter++;                      // increment number of moves made
 
         zobristHash ^= ZOBRIST_TABLE[row][column][player]; // update hash for state
@@ -112,7 +111,7 @@ public class Grid {
 
     // undos a move
     public void undoMove() {
-        int column = moveHistory.pop();     // get last move
+        int column = moveHistory.remove(moveHistory.size() - 1);  // get last move
         int player = --moveCounter & 1;     
 
         height[column]--;  // decrement height for the column of the prev move
@@ -237,6 +236,9 @@ public class Grid {
     }
     public int getMoveCounter() {
         return moveCounter;
+    }
+    public List<Integer> getMoveHistory() {
+        return moveHistory;
     }
     public Long getAIBitboard() {
         return bitboards[1];

@@ -2,22 +2,27 @@ package Player;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import Enums.MoveFlag;
 import GameLogic.MoveEntry;
 import Grid.Grid;
+import Grid.OpeningBook;
 
 public class AIPlayer extends Player{
 
     private int[] columnOrder = {3, 2, 4, 1, 5, 0, 6};
     private HashMap<Long, MoveEntry> transpositionTable = new HashMap<>();
+    private OpeningBook openingBook;
 
+    // for benchmark
     private long runDuration;
     private long exploredNodes;
     private int aiMove;
     
     public AIPlayer(String name, char token, Grid grid) {
         super(name, token, grid);
+        openingBook = new OpeningBook();
     }
 
     @Override
@@ -35,7 +40,19 @@ public class AIPlayer extends Player{
     public void chooseOptimalMove() {
         long startTime = System.nanoTime(); // timer
 
-        MoveEntry bestMove = negamax(getGrid(), 18, Integer.MIN_VALUE, Integer.MAX_VALUE, 1, 0);
+        // get the move history
+        String moveHistoryString = getGrid().getMoveHistory().stream().map(Object::toString)
+                                        .collect(Collectors.joining(","));
+        // move sequence is found in the opeing book                               
+        if (openingBook.getOpeningBook().containsKey(moveHistoryString)) {
+            int move = openingBook.getOpeningBook().get(moveHistoryString);
+            getGrid().makeMove(move);
+        } 
+        // use ai algorithm if not in opening book
+        else {
+            MoveEntry bestMove = negamax(getGrid(), 18, Integer.MIN_VALUE, Integer.MAX_VALUE, 1, 0);
+            getGrid().makeMove(bestMove.getMove()); // mark cell
+        }
         
         // MoveScore bestMove = new MoveScore(-1, Integer.MIN_VALUE);
         // int maxDepth = 18;
@@ -48,13 +65,12 @@ public class AIPlayer extends Player{
         //     }
         // }
         
-        getGrid().makeMove(bestMove.getMove()); // mark cell
 
         long endTime = System.nanoTime(); // timer
 
         // System.out.println("AI move: " + bestMove.getMove());
         runDuration = endTime-startTime; 
-        aiMove = bestMove.getMove();
+        //aiMove = bestMove.getMove();
     }
     private MoveEntry negamax(Grid state, int depth, int alpha, int beta, int color, int currentDepth) {
         exploredNodes++;
