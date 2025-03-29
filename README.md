@@ -1,20 +1,13 @@
 # Connect 4 AI
 
-A Java-based Tic-Tac-Toe game with AI opponents of varying difficulty levels, including Random, Beatable, and Unbeatable AI using the Minimax algorithm. Players can compete against another human or different AI modes.
+A Java-based Connect 4 game featuring a powerful AI opponent that leverages advanced techniques like alpha-beta pruning, transposition tables, and bitboard representation. Players can challenge the AI or play head-to-head with another human.
 
 ## 🚀 Overview 
 
+Connect 4 is a classic two-player strategy game played on a 7-column by 6-row grid. Players take turns dropping colored discs into a column, and the disc occupies the lowest available slot. The objective is to be the first to connect four of one’s own discs in a row — vertically, horizontally, or diagonally.
+Unlike Tic Tac Toe, Connect 4 is significantly more complex, with over 4 trillion possible game states and deeper strategic considerations. This project introduces an optimized AI capable of competing at a high level using modern search enhancements and efficient board encoding.
+
 Tic Tac Toe is a solved game, with a draw being forced if both players play optimally. If a player plays optimally, he can win or draw based on the other player's moves. Two players play the game on a 3x3 grid where each player is assigned 'X' or 'O'. The game takes turns with each player placing their mark on the grid. The player wins if he places his mark in a completely horizontal, vertical, or diagonal way. The game is a draw if the grid is full with no player winning. The game contains 138 terminal states and 255,168 possible valid states. The complete game tree at the start of the game has a depth of 9 (first depth 0).
-
-## 🏆 Features 
-
--  **Play Against AI or a Human Opponent**  
--  **Multiple AI Difficulty Levels**:  
-  - **Random AI**  (Picks moves randomly)  
-  - **Beatable AI**  (Makes some mistakes)  
-  - **Unbeatable AI**  (Uses the Minimax algorithm)  
--  **Console-based UI**  
--  **Modular and Extensible Codebase**  
 
 ## 🎮 How to Play 
 
@@ -30,41 +23,34 @@ Tic Tac Toe is a solved game, with a draw being forced if both players play opti
 7. **To replay the game** enter **1** or enter any other key **to exit**
 8. **Enjoy playing!** 🎉
 
-## 📂 Project Structure
-- **src/**
-  - **GameLogic/**
-    - `Game.java` → Game management
-    - `MoveScore.java` → Represents move evaluation in Minimax
-  - **Grid/**
-    - `Grid.java` → Represents the Tic-Tac-Toe board
-  - **Players/**
-    - `Player.java` → Base abstract class for all players
-    - `HumanPlayer.java` → Handles human player input
-    - `AIPlayer.java` → AI player with Minimax & difficulty levels
-  - **Enums/**
-    - `AIMode.java` → Enum for AI difficulty modes (RANDOM, BEATABLE, UNBEATABLE)
-  - `Main.java` → Main game loop and entry point of the game
-
 ## :robot: AI Implementation
 
-Due to the simplicity of Tic Tac TOe and its relatively easy computation, we can brute-force all the possible game states until they reach the terminal states easily without further optimizations. Although this works for Tic Tac Toe, more complex games (Connect 4, Chess, Go) will need many more optimizations to beat humans. This is meant as an introductory project to the world of zero-sum games and their AI.
+Connect 4's increased complexity demands more than brute-force search. To enable intelligent decision-making at reasonable speeds, the AI employs several optimization techniques:
 
-This is a simple implementation of a brute-force minimax algorithm that has no extra optimizations like:
-- Alpha-beta pruning
-- Evaluation function
-- etc...
+### Minimax with Alpha-Beta Pruning
+Alpha-beta pruning significantly reduces the number of nodes evaluated in the game tree by pruning branches that cannot possibly influence the final decision. This allows deeper searches within the same time constraints.
 
-The **Unbeatable AI** uses the **Minimax Algorithm** to find the best move by:
-1. Finding all possible moves
-2. Alternating between MIN and MAX opponents
-3. Assigning each terminal state a value
-   - +1 for a WIN
-   - -1 for a LOSS
-   - 0 for a TIE
-4. Backtracking to choose the move with the highest score and better depth to play the game optimally
+### Transposition Tables
+Transposition tables store the results of previously evaluated board states. Since the same game state can often be reached through different move sequences, this avoids redundant computations and accelerates decision-making.
+
+### Bitboard Representation
+Instead of using a 2D array, the game board is represented using bitboards — compact 64-bit integers where each bit represents a cell. This allows:
+- Fast board evaluation using bitwise operations
+- Quick detection of winning conditions
+- Memory-efficient board state storage
+
+### Evaluation Function
+When the maximum search depth is reached or the game is not yet in a terminal state, a heuristic evaluation function scores the board. Factors considered include:
+- Potential lines of 4
+- Central column advantage
+- Blocking opponent threats
+
+The AI dynamically adjusts its evaluation depending on the game phase, enabling smart offensive and defensive play.
 
 ## 📌Future Improvements
-- Add alpha-beta pruning for optimization
+- Add support for parallelized search using multithreading
+- Implement iterative deepening with time control
+- Incorporate learning-based heuristics using self-play
 
 ## References and Resources
 - [Main tutorial I followed](http://blog.gamesolver.org/solving-connect-four/01-introduction/)
