@@ -1,5 +1,7 @@
 package Grid;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.Stack;
 
@@ -123,8 +125,63 @@ public class Grid {
         zobristHash ^= ZOBRIST_TABLE[row][column][player];  // restore hash for state
     }
 
+    public List<Long> generateMasks() {
+        List<Long> masks = new ArrayList<>();
+    
+        // Horizontal masks
+        for (int row = 0; row < 6; row++) {
+            for (int col = 0; col <= 3; col++) { // only 0–3
+                long mask = 0L;
+                for (int i = 0; i < 4; i++) {
+                    mask |= 1L << ((col + i) * 7 + row);
+                }
+                masks.add(mask);
+            }
+        }
+    
+        // Vertical masks
+        for (int col = 0; col < 7; col++) {
+            for (int row = 0; row <= 2; row++) { // only 0–2 (to fit 4 cells)
+                long mask = 0L;
+                for (int i = 0; i < 4; i++) {
+                    mask |= 1L << (col * 7 + (row + i));
+                }
+                masks.add(mask);
+            }
+        }
+    
+        // Positive diagonal ("/")
+        for (int col = 0; col <= 3; col++) {
+            for (int row = 3; row < 6; row++) {
+                long mask = 0L;
+                for (int i = 0; i < 4; i++) {
+                    mask |= 1L << ((col + i) * 7 + (row - i));
+                }
+                masks.add(mask);
+            }
+        }
+    
+        // Negative diagonal ("\\")
+        for (int col = 0; col <= 3; col++) {
+            for (int row = 0; row <= 2; row++) {
+                long mask = 0L;
+                for (int i = 0; i < 4; i++) {
+                    mask |= 1L << ((col + i) * 7 + (row + i));
+                }
+                masks.add(mask);
+            }
+        }
+
+        // visualize masks
+        // for (Long mask : masks) {
+        //     printBitboard(mask, 'x');
+        // }
+
+        return masks;
+    }    
+
     // checks whether the board is full or not (Tie)
-    private boolean isFull() {
+    public boolean isFull() {
         long fullMask = (1L << 5) | (1L << 12) | (1L << 19) | 
                         (1L << 26) | (1L << 33) | (1L << 40) | (1L << 47);
             
@@ -181,14 +238,20 @@ public class Grid {
     public int getMoveCounter() {
         return moveCounter;
     }
+    public Long getAIBitboard() {
+        return bitboards[1];
+    }
+    public Long getPlayerBitboard() {
+        return bitboards[0];
+    }
 
     // FOR DEBUGGING
     public void displayBitboards() {
         System.out.println("Player 1 (X) Bitboard:");
-        printBitboard(bitboards[0], 'X');
+        printBitboard(bitboards[0], 'x');
         
         System.out.println("\nPlayer 2 (O) Bitboard:");
-        printBitboard(bitboards[1], 'O');
+        printBitboard(bitboards[1], 'o');
     }
     
     private void printBitboard(long bitboard, char token) {

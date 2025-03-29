@@ -14,9 +14,9 @@ public class Main {
          * avg time: 3593073867 nano(s) = 3.593073867 (s)
          * nodes visited: 15,718,163
         */
-        benchMarkAI(70);
+        //benchMarkAI(70);
 
-        //gameLoop();        
+        gameLoop();        
     }
 
     private static void gameLoop() {
@@ -35,6 +35,7 @@ public class Main {
 
         // alternate between player turns
         while (!game.isGameEnded()) {
+            grid.generateMasks();
             game.getPlayer1().handleTurn();
 
             if (game.isGameEnded()) { break; }

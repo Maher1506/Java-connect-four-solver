@@ -1,6 +1,7 @@
 package Player;
 
 import java.util.HashMap;
+import java.util.List;
 
 import Enums.MoveFlag;
 import GameLogic.MoveEntry;
@@ -82,7 +83,7 @@ public class AIPlayer extends Player{
 
         // reached terminal state or intended depth
         if (state.isTerminalState() || depth == 0) {
-            return heuristicValue(state, color, depth); // return heuristic value
+            return evaulateState(state, color, depth); // return heuristic value
         }
 
         MoveEntry bestMove = new MoveEntry(-1, Integer.MIN_VALUE, depth);
@@ -98,7 +99,7 @@ public class AIPlayer extends Player{
 
                 int negatedScore = -move.getScore(); // negate score (instead of -negamax())
 
-                // if new move has higher score OR same score but lower depth
+                // if new move has higher score
                 if ((negatedScore > bestMove.getScore())) {
                     bestMove = new MoveEntry(i, negatedScore, depth);
                 }
@@ -123,20 +124,42 @@ public class AIPlayer extends Player{
 
         return bestMove; 
     }
-    // method to evaluate the heuristic value for game states
-    private MoveEntry heuristicValue(Grid state, int color, int depth) {
-        // game is a tie
-        if (state.getWinnerToken() == '\0') {
-            return new MoveEntry(-1, color * 0, depth);
+    // method to evaluate the all game states
+    private MoveEntry evaulateState(Grid state, int color, int depth) {
+        int score = 0;
+        
+        List<Long> masks = state.generateMasks();
+        Long aiBoard = state.getAIBitboard();
+        Long playerBoard = state.getPlayerBitboard();
+        // loop through all mask
+        for (Long mask : masks) {
+            int aiCount = Long.bitCount(aiBoard & mask); // number of ai tokens in the mask
+            int playerCount = Long.bitCount(playerBoard & mask); // number of player tokens in the mask
+
+            if (aiCount > 0 && playerCount > 0) 
+                continue;
+            
+            // max player (us) won
+            if (aiCount == 4)
+                return new MoveEntry(-1, color * (100 - state.getMoveCounter()), depth);
+            // min player won (opponent)
+            if (playerCount == 4)
+                return new MoveEntry(-1, color * (-100 + state.getMoveCounter()), depth);
+
+            // advantage for max player (us)
+            if (aiCount == 3 && playerCount == 0)
+                score += 5;
+            else if (aiCount == 2 && playerCount == 0)
+                score += 2;
+
+            // advantage for min player (opponnet) (threat for us)
+            if (playerCount == 3 && aiCount == 0)
+                score -= 5;
+            else if (playerCount == 2 && aiCount == 0)
+                score -= 2;
         }
-        // max player (us) won
-        else if (state.getWinnerToken() == getToken()) {
-            return new MoveEntry(-1, color * (1000 - state.getMoveCounter()), depth);
-        }
-        // min player won (opponent)
-        else {
-            return new MoveEntry(-1, color * (-1000 + state.getMoveCounter()), depth);
-        }
+
+        return new MoveEntry(-1, color * (score - state.getMoveCounter()), depth);
     }
 
     // method to choose a random column (0-6) inclusive
