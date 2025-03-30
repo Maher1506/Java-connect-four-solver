@@ -57,6 +57,7 @@ The AI dynamically adjusts its evaluation depending on the game phase, enabling 
 - Implement iterative deepening with time control
 - Test the game against multiple AI
 - Rewrite the project in C++ to be more efficient and pass the 18-ply ceiling
+- Generate a more complete opening book
 
 ## References and Resources
 - [Main tutorial I followed](http://blog.gamesolver.org/solving-connect-four/01-introduction/)
