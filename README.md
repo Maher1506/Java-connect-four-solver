@@ -74,4 +74,6 @@ The AI dynamically adjusts its evaluation depending on the game phase, enabling 
   - [Bitboards and Connect 4](https://github.com/denkspuren/BitboardC4/blob/master/BitboardDesign.md)
   - My OneNote Note:
 - **Transposition Table and Zobrist Hashing**
-  - My OneNote Note: 
+  - My OneNote Note:
+- **Evaluation Function**
+   - [Reduced Search Depth and Heuristic Evaluation for Connect Four by Justin Skycak](https://www.justinmath.com/reduced-search-depth-and-heuristic-evaluation-for-connect-four/)
