@@ -4,10 +4,8 @@ A Java-based Connect 4 game featuring a powerful AI opponent that leverages adva
 
 ## 🚀 Overview 
 
-Connect 4 is a classic two-player strategy game played on a 7-column by 6-row grid. Players take turns dropping colored discs into a column, and the disc occupies the lowest available slot. The objective is to be the first to connect four of one’s own discs in a row — vertically, horizontally, or diagonally.
-Unlike Tic Tac Toe, Connect 4 is significantly more complex, with over 4 trillion possible game states and deeper strategic considerations. This project introduces an optimized AI capable of competing at a high level using modern search enhancements and efficient board encoding.
-
-Tic Tac Toe is a solved game, with a draw being forced if both players play optimally. If a player plays optimally, he can win or draw based on the other player's moves. Two players play the game on a 3x3 grid where each player is assigned 'X' or 'O'. The game takes turns with each player placing their mark on the grid. The player wins if he places his mark in a completely horizontal, vertical, or diagonal way. The game is a draw if the grid is full with no player winning. The game contains 138 terminal states and 255,168 possible valid states. The complete game tree at the start of the game has a depth of 9 (first depth 0).
+Connect 4 is a classic two-player strategy game played on a 7-column by 6-row grid. Players take turns dropping colored discs into a column, and the disc occupies the lowest available slot. The objective is to be the first to connect four of one’s own discs in a row — vertically, horizontally, or diagonally. The game is solved, with the first player forcing a win if played perfectly.
+Unlike Tic Tac Toe, Connect 4 is significantly more complex, with 4,531,985,219,092 (about 4.5 trillion) possible game states and deeper strategic considerations. The complete game tree at the start of the game has a depth of 42 (first depth 0). This project introduces an optimized AI capable of competing at a high level using modern search enhancements and efficient board encoding.
 
 ## 🎮 How to Play 
 
@@ -25,7 +23,7 @@ Tic Tac Toe is a solved game, with a draw being forced if both players play opti
 
 ## :robot: AI Implementation
 
-Connect 4's increased complexity demands more than brute-force search. To enable intelligent decision-making at reasonable speeds, the AI employs several optimization techniques:
+Connect 4's increased complexity demands more than a brute-force search. To enable intelligent decision-making at reasonable speeds, the AI employs several optimization techniques:
 
 ### Minimax with Alpha-Beta Pruning
 Alpha-beta pruning significantly reduces the number of nodes evaluated in the game tree by pruning branches that cannot possibly influence the final decision. This allows deeper searches within the same time constraints.
@@ -39,6 +37,12 @@ Instead of using a 2D array, the game board is represented using bitboards — c
 - Quick detection of winning conditions
 - Memory-efficient board state storage
 
+### Opening Book
+Using AI to generate a list of moves and there best response, I was able to generate a book of about 4-plies to help the game solve the opening sequences more faster.
+
+### Move Ordering
+The center columns are statistically proven to form more winning streaks. By exploring them first, the algorithm was able to prune more branches, leading to more efficiency in computation. 
+
 ### Evaluation Function
 When the maximum search depth is reached or the game is not yet in a terminal state, a heuristic evaluation function scores the board. Factors considered include:
 - Potential lines of 4
@@ -48,9 +52,11 @@ When the maximum search depth is reached or the game is not yet in a terminal st
 The AI dynamically adjusts its evaluation depending on the game phase, enabling smart offensive and defensive play.
 
 ## 📌Future Improvements
+- Incorporate a more advanced evaluation function to be able to distinguish between equal moves at the start of the game
 - Add support for parallelized search using multithreading
 - Implement iterative deepening with time control
-- Incorporate learning-based heuristics using self-play
+- Test the game against multiple AI
+- Rewrite the project in C++ to be more efficient and pass the 18-ply ceiling
 
 ## References and Resources
 - [Main tutorial I followed](http://blog.gamesolver.org/solving-connect-four/01-introduction/)
@@ -68,17 +74,3 @@ The AI dynamically adjusts its evaluation depending on the game phase, enabling 
   - My OneNote Note:
 - **Transposition Table and Zobrist Hashing**
   - My OneNote Note: 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
