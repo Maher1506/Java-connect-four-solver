@@ -50,7 +50,7 @@ public class AIPlayer extends Player{
         } 
         // use ai algorithm if not in opening book
         else {
-            MoveEntry bestMove = negamax(getGrid(), 18, Integer.MIN_VALUE, Integer.MAX_VALUE, 1, 0);
+            MoveEntry bestMove = negamax(getGrid(), 3, Integer.MIN_VALUE, Integer.MAX_VALUE, 1, 0);
             getGrid().makeMove(bestMove.getMove()); // mark cell
         }
         
@@ -143,14 +143,39 @@ public class AIPlayer extends Player{
     // method to evaluate the all game states
     private MoveEntry evaulateState(Grid state, int color, int depth) {
         int score = 0;
+        Long currentPlayerBoard = (color == 1) ? state.getAIBitboard() : state.getPlayerBitboard();
+        Long opponentBoard = (color == 1) ? state.getPlayerBitboard() : state.getAIBitboard();
+        currentPlayerBoard = state.getAIBitboard();
+        opponentBoard = state.getPlayerBitboard();
+
+        // System.out.println("Depth: " + depth);;
+        // state.printBitboard(currentPlayerBoard, 'C');
+        // state.printBitboard(opponentBoard, 'A');
         
+        // central control
+        // int centerCol = 3;
+        // for (int row = 0; row < 6; row++) {
+        //     int bitIndex = centerCol * 7 + row;
+        //     if (((currentPlayerBoard >> bitIndex) & 1L) == 1) score += 3;
+        //     if (((opponentBoard >> bitIndex) & 1L) == 1) score -= 3;
+        // }
+
+        // // positional column weights
+        // int[] columnScores = {3, 4, 5, 7, 5, 4, 3}; // adjust as needed
+        // for (int col = 0; col < 7; col++) {
+        //     for (int row = 0; row < 6; row++) {
+        //         int bitIndex = col * 7 + row;
+        //         if (((currentPlayerBoard >> bitIndex) & 1L) == 1) score += columnScores[col];
+        //         if (((opponentBoard >> bitIndex) & 1L) == 1) score -= columnScores[col];
+        //     }
+        // }
+
+
         List<Long> masks = state.generateMasks();
-        Long aiBoard = state.getAIBitboard();
-        Long playerBoard = state.getPlayerBitboard();
         // loop through all mask
         for (Long mask : masks) {
-            int aiCount = Long.bitCount(aiBoard & mask); // number of ai tokens in the mask
-            int playerCount = Long.bitCount(playerBoard & mask); // number of player tokens in the mask
+            int aiCount = Long.bitCount(currentPlayerBoard & mask); // number of ai tokens in the mask
+            int playerCount = Long.bitCount(opponentBoard & mask); // number of player tokens in the mask
 
             if (aiCount > 0 && playerCount > 0) 
                 continue;
@@ -170,10 +195,19 @@ public class AIPlayer extends Player{
 
             // advantage for min player (opponnet) (threat for us)
             if (playerCount == 3 && aiCount == 0)
-                score -= 5;
+                score -= 50;
             else if (playerCount == 2 && aiCount == 0)
                 score -= 2;
         }
+
+        // Hardcoded check for immediate horizontal threat
+        long hcMask = 2113665l;
+        int count = Long.bitCount(hcMask & opponentBoard);
+        if (count == 3) {
+            System.out.println("HIGH THREAT");
+            score -= 1000;
+        }
+        //state.printBitboard(hcMask, 'H');
 
         return new MoveEntry(-1, color * (score - state.getMoveCounter()), depth);
     }

@@ -256,7 +256,7 @@ public class Grid {
         printBitboard(bitboards[1], 'o');
     }
     
-    private void printBitboard(long bitboard, char token) {
+    public void printBitboard(long bitboard, char token) {
         for (int row = ROW_SIZE - 1; row >= 0; row--) { // Start from top row
             for (int col = 0; col < COLUMN_SIZE; col++) {
                 int bitPosition = col * COLUMN_SIZE + row; // Correct column-major order
